@@ -1,3 +1,5 @@
+package commands;
+
 import edu.java.bot.commands.Command;
 import edu.java.bot.commands.UntrackCommand;
 import org.junit.jupiter.api.Test;

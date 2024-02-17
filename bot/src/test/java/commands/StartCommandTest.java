@@ -1,3 +1,5 @@
+package commands;
+
 import edu.java.bot.commands.Command;
 import edu.java.bot.commands.StartCommand;
 import org.junit.jupiter.api.Test;
