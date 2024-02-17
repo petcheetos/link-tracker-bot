@@ -17,7 +17,7 @@ import org.springframework.context.annotation.Configuration;
 public class CommandConfig {
 
     @Bean
-    public static Map<String, Command> createCommandMap() {
+    public Map<String, Command> commandMap() {
         Map<String, Command> commandMap = new HashMap<>();
         Command start = new StartCommand();
         Command list = new ListCommand();

@@ -1,4 +1,4 @@
-package edu.java.bot;
+package edu.java.bot.service;
 
 import com.pengrad.telegrambot.model.Update;
 import edu.java.bot.commands.Command;
@@ -6,16 +6,24 @@ import edu.java.bot.configuration.CommandConfig;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class MessageService {
+public class BotCommandService implements CommandService {
     private final Map<String, Command> commandMap;
 
-    public MessageService() {
-        this.commandMap = CommandConfig.createCommandMap();
+    @Autowired
+    public BotCommandService(CommandConfig commandConfig) {
+        this.commandMap = commandConfig.commandMap();
     }
 
+    @Override
+    public Map<String, Command> getCommandMap() {
+        return commandMap;
+    }
+
+    @Override
     public String createResponse(Update update) {
         String msgText = update.message().text();
         Command command = commandMap.get(msgText);
@@ -35,4 +43,3 @@ public class MessageService {
         return "...";
     }
 }
-

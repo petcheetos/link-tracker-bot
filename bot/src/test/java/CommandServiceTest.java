@@ -1,20 +1,28 @@
 import com.pengrad.telegrambot.model.Update;
-import edu.java.bot.MessageService;
+import edu.java.bot.configuration.CommandConfig;
+import edu.java.bot.service.BotCommandService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @ExtendWith(MockitoExtension.class)
-public class MessageServiceTest {
+public class CommandServiceTest {
+
+    @Mock
+    CommandConfig commandConfig = new CommandConfig();
+
+    @InjectMocks
+    BotCommandService botCommandService = new BotCommandService(commandConfig);
 
     @Test
     public void createResponseWithUnknownCommand() {
         Update update = Mockito.mock(Update.class, Mockito.RETURNS_DEEP_STUBS);
         Mockito.when(update.message().text()).thenReturn("/unknown");
-        MessageService messageService = new MessageService();
-        String msg = messageService.createResponse(update);
+        String msg = botCommandService.createResponse(update);
         assertThat(msg).isEqualTo("I don't know this command! Type /help to find out about my commands");
     }
 
@@ -22,8 +30,7 @@ public class MessageServiceTest {
     public void createResponseWithStartCommand() {
         Update update = Mockito.mock(Update.class, Mockito.RETURNS_DEEP_STUBS);
         Mockito.when(update.message().text()).thenReturn("/start");
-        MessageService messageService = new MessageService();
-        String msg = messageService.createResponse(update);
+        String msg = botCommandService.createResponse(update);
         assertThat(msg).isEqualTo("Hi! I am a link tracking bot! Type /help to see the list of available commands!");
     }
 
@@ -31,8 +38,7 @@ public class MessageServiceTest {
     public void createResponseWithListCommand() {
         Update update = Mockito.mock(Update.class, Mockito.RETURNS_DEEP_STUBS);
         Mockito.when(update.message().text()).thenReturn("/list");
-        MessageService messageService = new MessageService();
-        String msg = messageService.createResponse(update);
+        String msg = botCommandService.createResponse(update);
         assertThat(msg).isEqualTo("List of tracking sites:");
     }
 
@@ -40,8 +46,7 @@ public class MessageServiceTest {
     public void createResponseWithTrackCommand() {
         Update update = Mockito.mock(Update.class, Mockito.RETURNS_DEEP_STUBS);
         Mockito.when(update.message().text()).thenReturn("/track");
-        MessageService messageService = new MessageService();
-        String msg = messageService.createResponse(update);
+        String msg = botCommandService.createResponse(update);
         assertThat(msg).isEqualTo("What site do you want to track updates to? Please, send a link!");
     }
 
@@ -49,8 +54,7 @@ public class MessageServiceTest {
     public void createResponseWithUntrackCommand() {
         Update update = Mockito.mock(Update.class, Mockito.RETURNS_DEEP_STUBS);
         Mockito.when(update.message().text()).thenReturn("/untrack");
-        MessageService messageService = new MessageService();
-        String msg = messageService.createResponse(update);
+        String msg = botCommandService.createResponse(update);
         assertThat(msg).isEqualTo("What site do you want to stop receiving updates from? Please, send a link!");
     }
 
@@ -58,12 +62,13 @@ public class MessageServiceTest {
     public void createResponseWithHelpCommand() {
         Update update = Mockito.mock(Update.class, Mockito.RETURNS_DEEP_STUBS);
         Mockito.when(update.message().text()).thenReturn("/help");
-        MessageService messageService = new MessageService();
-        String msg = messageService.createResponse(update);
-        assertThat(msg).isEqualTo("Commands:\n" +
-            "\t- /start - Register a user\n" +
-            "\t- /list - Send a list of tracking sites\n" +
-            "\t- /track - Add link for tracking\n" +
-            "\t- /untrack - Remove a site from the tracking list\n");
+        String msg = botCommandService.createResponse(update);
+        assertThat(msg).isEqualTo("""
+                Commands:
+                \t- /start - Register a user
+                \t- /list - Send a list of tracking sites
+                \t- /track - Add link for tracking
+                \t- /untrack - Remove a site from the tracking list
+                """);
     }
 }

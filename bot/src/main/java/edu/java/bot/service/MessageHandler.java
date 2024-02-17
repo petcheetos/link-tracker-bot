@@ -1,20 +1,22 @@
-package edu.java.bot;
+package edu.java.bot.service;
 
 import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.UpdatesListener;
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.request.SendMessage;
 import java.util.List;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
 public class MessageHandler implements UpdatesListener {
     private final TelegramBot telegramBot;
-    private final MessageService messageService;
+    private final CommandService commandService;
 
-    public MessageHandler(TelegramBot telegramBot, MessageService messageService) {
+    @Autowired
+    public MessageHandler(TelegramBot telegramBot, CommandService commandService) {
         this.telegramBot = telegramBot;
-        this.messageService = messageService;
+        this.commandService = commandService;
         telegramBot.setUpdatesListener(this);
     }
 
@@ -22,7 +24,7 @@ public class MessageHandler implements UpdatesListener {
     public int process(List<Update> list) {
         for (Update update : list) {
             if (update.message() != null && update.message().text() != null) {
-                String answer = messageService.createResponse(update);
+                String answer = commandService.createResponse(update);
                 SendMessage request = new SendMessage(update.message().chat().id(), answer);
                 telegramBot.execute(request);
             }
