@@ -33,4 +33,3 @@ public class GithubClientTest {
         assertThat(gitHubResponse.pushedAt()).isEqualTo("2024-02-23T17:30:12Z");
     }
 }
-
