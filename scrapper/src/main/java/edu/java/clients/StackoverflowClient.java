@@ -1,13 +1,18 @@
 package edu.java.clients;
 
 import edu.java.dto.StackoverflowResponse;
+import java.util.Objects;
 import org.springframework.web.reactive.function.client.WebClient;
 
 public class StackoverflowClient {
+    private static final String BASE_URL = "https://api.stackexchange.com/2.3";
     private final WebClient webClient;
 
     public StackoverflowClient(String baseUrl) {
-        this.webClient = WebClient.builder().baseUrl(baseUrl).build();
+        this.webClient = WebClient
+            .builder()
+            .baseUrl(Objects.requireNonNullElse(baseUrl, BASE_URL))
+            .build();
     }
 
     public StackoverflowResponse getUpdate(String id) {
