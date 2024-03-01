@@ -1,7 +1,7 @@
 package edu.java.scrapper;
 
 import com.github.tomakehurst.wiremock.junit5.WireMockTest;
-import edu.java.client.GitHubClient;
+import edu.java.clients.GitHubClient;
 import edu.java.dto.GitHubResponse;
 import org.junit.jupiter.api.Test;
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;

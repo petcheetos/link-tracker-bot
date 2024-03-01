@@ -1,4 +1,4 @@
-package edu.java.client;
+package edu.java.clients;
 
 import edu.java.dto.StackoverflowResponse;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -13,7 +13,13 @@ public class StackoverflowClient {
     public StackoverflowResponse getUpdate(String id) {
         return webClient
             .get()
-            .uri(id + "/?sort=activity&site=stackoverflow&order=desc&filter=withbody")
+            .uri(uriBuilder -> uriBuilder
+                .path(id + "/")
+                .queryParam("sort", "activity")
+                .queryParam("site", "stackoverflow")
+                .queryParam("order", "desc")
+                .queryParam("filter", "withbody")
+                .build())
             .retrieve()
             .bodyToMono(StackoverflowResponse.class)
             .block();
