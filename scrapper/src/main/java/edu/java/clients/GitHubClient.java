@@ -8,10 +8,9 @@ public class GitHubClient {
     private static final String BASE_URL = "https://api.github.com";
     private final WebClient webClient;
 
-    public GitHubClient(String baseUri) {
-        this.webClient = WebClient
-            .builder()
-            .baseUrl(Objects.requireNonNullElse(baseUri, BASE_URL))
+    public GitHubClient(WebClient.Builder builder, String baseUrl) {
+        this.webClient = builder
+            .baseUrl(Objects.requireNonNullElse(baseUrl, BASE_URL))
             .build();
     }
 

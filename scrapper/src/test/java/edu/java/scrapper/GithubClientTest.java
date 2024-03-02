@@ -4,7 +4,6 @@ import com.github.tomakehurst.wiremock.junit5.WireMockTest;
 import edu.java.clients.GitHubClient;
 import edu.java.dto.GitHubResponse;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.reactive.function.client.WebClient;
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.get;
@@ -14,10 +13,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @WireMockTest(httpPort = 8080)
 public class GithubClientTest {
-    @Autowired
-    WebClient.Builder webClientBuilder;
 
-    private final GitHubClient githubClient = new GitHubClient("http://localhost:8080/repos/");
+    private final GitHubClient githubClient = new GitHubClient(WebClient.builder(), "http://localhost:8080/repos/");
 
     @Test
     void getRepositoryInfo() {

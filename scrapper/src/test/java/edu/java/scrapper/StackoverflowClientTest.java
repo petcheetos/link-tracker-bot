@@ -4,7 +4,6 @@ import com.github.tomakehurst.wiremock.junit5.WireMockTest;
 import edu.java.clients.StackoverflowClient;
 import edu.java.dto.StackoverflowResponse;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.reactive.function.client.WebClient;
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
@@ -15,11 +14,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @WireMockTest(httpPort = 8080)
 public class StackoverflowClientTest {
-    @Autowired
-    WebClient.Builder webClientBuilder;
 
     private final StackoverflowClient stackoverflowClient =
-        new StackoverflowClient("http://localhost:8080/2.3/questions/");
+        new StackoverflowClient(WebClient.builder(), "http://localhost:8080/2.3/questions/");
 
     private final String response =
         """
