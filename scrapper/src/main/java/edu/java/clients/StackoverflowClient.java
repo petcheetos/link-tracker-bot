@@ -8,9 +8,8 @@ public class StackoverflowClient {
     private static final String BASE_URL = "https://api.stackexchange.com/2.3";
     private final WebClient webClient;
 
-    public StackoverflowClient(String baseUrl) {
-        this.webClient = WebClient
-            .builder()
+    public StackoverflowClient(WebClient.Builder builder, String baseUrl) {
+        this.webClient = builder
             .baseUrl(Objects.requireNonNullElse(baseUrl, BASE_URL))
             .build();
     }

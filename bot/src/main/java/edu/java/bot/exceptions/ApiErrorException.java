@@ -1,4 +1,4 @@
-package edu.java.exception;
+package edu.java.bot.exceptions;
 
 import edu.java.models.ApiErrorResponse;
 
