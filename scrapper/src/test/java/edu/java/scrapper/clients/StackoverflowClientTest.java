@@ -1,4 +1,4 @@
-package edu.java.scrapper;
+package edu.java.scrapper.clients;
 
 import com.github.tomakehurst.wiremock.junit5.WireMockTest;
 import edu.java.clients.StackoverflowClient;
@@ -16,10 +16,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class StackoverflowClientTest {
 
     private final StackoverflowClient stackoverflowClient =
+
         new StackoverflowClient(WebClient.builder(), "http://localhost:8080/2.3/questions/");
 
-    private final String response =
-        """
+    @Test
+    void getUpdate() {
+        String response = """
             {
                 "items": [
                     {
@@ -52,9 +54,6 @@ public class StackoverflowClientTest {
                 "quota_max": 300,
                 "quota_remaining": 296
             }""";
-
-    @Test
-    void getUpdate() {
         stubFor(get(urlPathMatching("/2\\.3/questions/78052463/"))
             .withQueryParam("site", equalTo("stackoverflow"))
             .willReturn(aResponse()
