@@ -1,4 +1,5 @@
 --liquibase formatted sql
+
 create table if not exists link (
     id bigint generated always as identity,
     url text not null,
