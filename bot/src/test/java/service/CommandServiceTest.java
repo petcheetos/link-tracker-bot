@@ -2,7 +2,7 @@ package service;
 
 import com.pengrad.telegrambot.model.Update;
 import edu.java.bot.configuration.CommandConfig;
-import edu.java.bot.service.BotCommandService;
+import edu.java.bot.services.BotCommandService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;

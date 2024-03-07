@@ -17,7 +17,9 @@ public record ApplicationConfig(
     @NotNull
     GithubBaseUrl githubBaseUrl,
     @NotNull
-    StackoverflowBaseUrl stackoverflowBaseUrl
+    StackoverflowBaseUrl stackoverflowBaseUrl,
+    @NotNull
+    BotBaseUrl botBaseUrl
 ) {
     public record Scheduler(boolean enable, @NotNull Duration interval, @NotNull Duration forceCheckDelay) {
     }
@@ -26,5 +28,8 @@ public record ApplicationConfig(
     }
 
     public record StackoverflowBaseUrl(@NotNull String baseUrl) {
+    }
+
+    public record BotBaseUrl(@NotNull String baseUrl) {
     }
 }
