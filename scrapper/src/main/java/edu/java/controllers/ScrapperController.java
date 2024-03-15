@@ -6,6 +6,9 @@ import edu.java.models.ListLinkResponse;
 import edu.java.models.RemoveLinkRequest;
 import edu.java.services.ChatService;
 import java.util.List;
+import edu.java.services.LinkService;
+import io.swagger.v3.oas.models.links.Link;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -15,12 +18,10 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
+@RequiredArgsConstructor
 public class ScrapperController {
     private final ChatService chatService;
-
-    public ScrapperController(ChatService chatService) {
-        this.chatService = chatService;
-    }
+    private final LinkService linkService;
 
     @PostMapping("/tg-chat/{id}")
     public String registerChat(@PathVariable("id") long id) {
@@ -36,17 +37,17 @@ public class ScrapperController {
 
     @GetMapping("/links")
     public ListLinkResponse getLinks(@RequestHeader("Tg-Chat-Id") long chatId) {
-        List<LinkResponse> links = chatService.getLinks(chatId);
+        List<LinkResponse> links = linkService.getLinks(chatId);
         return new ListLinkResponse(links, links.size());
     }
 
     @PostMapping("/links")
     public LinkResponse addLink(@RequestHeader("Tg-Chat-Id") long chatId, @RequestBody AddLinkRequest request) {
-        return chatService.addLink(chatId, request.link());
+        return linkService.addLink(chatId, request.link());
     }
 
     @DeleteMapping("/links")
     public LinkResponse deleteLink(@RequestHeader("Tg-Chat-Id") long chatId, @RequestBody RemoveLinkRequest request) {
-        return chatService.deleteLink(chatId, request.link());
+        return linkService.deleteLink(chatId, request.link());
     }
 }
