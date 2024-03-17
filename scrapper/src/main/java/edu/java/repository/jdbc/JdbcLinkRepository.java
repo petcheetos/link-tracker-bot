@@ -46,8 +46,8 @@ public class JdbcLinkRepository implements LinkRepository {
     @Override
     @Transactional
     public List<LinkResponse> findAllByChat(long chatId) {
-        return jdbcTemplate.query("select link.* from link " +
-                "join chat_links on link.id = chat_links.link_id where chat_links.chat_id = ?",
+        return jdbcTemplate.query("select link.* from link "
+                + "join chat_links on link.id = chat_links.link_id where chat_links.chat_id = ?",
             new LinkResponseMapper(), chatId
         );
     }
