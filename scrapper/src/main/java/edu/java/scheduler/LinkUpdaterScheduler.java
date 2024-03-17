@@ -14,7 +14,6 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,8 +23,6 @@ import org.springframework.transaction.annotation.Transactional;
 public class LinkUpdaterScheduler {
     private static final Logger LOGGER = LogManager.getLogger();
 
-    @Value("${spring.database.check-minutes}")
-    private int minutesCheck;
     private final LinkRepository linkRepository;
     private final BotClient botClient;
     private final LinkProcessor linkProcessor;
@@ -34,7 +31,6 @@ public class LinkUpdaterScheduler {
 
     @Scheduled(fixedDelayString = "${app.scheduler.interval}")
     @Transactional
-    @SuppressWarnings("MultipleStringLiterals")
     public void update() {
         LOGGER.info("updated");
         List<LinkDTO> list = linkRepository.getLinksToUpdate();
@@ -46,7 +42,7 @@ public class LinkUpdaterScheduler {
                     || response.pushedAt().isAfter(linkDTO.lastUpdated())) {
                     linkRepository.updateLink(linkDTO);
                     botClient.sendUpdate(new LinkUpdateRequest(linkDTO.id(), linkDTO.url(),
-                        "update", linkRepository.getChatIdsForLink(linkDTO.id())
+                        "github update", linkRepository.getChatIdsForLink(linkDTO.id())
                     ));
                 }
             } else if (linkProcessor.isStackoverflowUrl(linkDTO.url())) {
@@ -58,7 +54,7 @@ public class LinkUpdaterScheduler {
                     if (time.isAfter(linkDTO.lastUpdated())) {
                         linkRepository.updateLink(linkDTO);
                         botClient.sendUpdate(new LinkUpdateRequest(linkDTO.id(), linkDTO.url(),
-                            "update", linkRepository.getChatIdsForLink(linkDTO.id())
+                            "stackoverflow update", linkRepository.getChatIdsForLink(linkDTO.id())
                         ));
                     }
                 }

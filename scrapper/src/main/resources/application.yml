@@ -1,8 +1,8 @@
 app:
   scheduler:
     enable: true
-    interval: 50000
-    force-check-delay: 50000
+    interval: "PT10M"
+    force-check-delay: "PT60M"
   github-base-url:
     base-url: "https://api.github.com/repos/"
   stackoverflow-base-url:
@@ -13,8 +13,6 @@ app:
 spring:
   application:
     name: scrapper
-  database:
-    check-minutes: 5
   datasource:
     driver-class-name: org.postgresql.Driver
     url: "jdbc:postgresql://localhost:5432/scrapper"
