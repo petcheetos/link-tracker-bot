@@ -61,9 +61,11 @@ public class JdbcLinkRepository implements LinkRepository {
     }
 
     @Override
-    public LinkDTO getLinkDTO(long linkId) {
-        return jdbcTemplate.queryForObject("select url, last_updated from link "
-            + "where id = (?)", new LinkMapper(), linkId);
+    public List<LinkDTO> getLinksToUpdate() {
+        return jdbcTemplate.query(
+            "select * from link where checked_at < timezone('utc', now()) - interval '10 minute'",
+            new LinkMapper()
+        );
     }
 
     @Transactional
@@ -77,8 +79,9 @@ public class JdbcLinkRepository implements LinkRepository {
         return result.isEmpty() ? null : result.getFirst();
     }
 
+    @Override
     @Transactional
-    protected Long getChatIdForLink(Long linkId) {
+    public List<Long> getChatIdsForLink(Long linkId) {
         if (linkId == null) {
             return null;
         }
@@ -87,6 +90,6 @@ public class JdbcLinkRepository implements LinkRepository {
             (rs, rowNum) -> rs.getLong("chat_id"),
             linkId
         );
-        return chatIds.isEmpty() ? null : chatIds.getFirst();
+        return chatIds.isEmpty() ? null : chatIds;
     }
 }

@@ -4,6 +4,7 @@ import edu.java.dto.LinkDTO;
 import edu.java.models.LinkResponse;
 import java.net.URI;
 import java.util.List;
+import org.springframework.transaction.annotation.Transactional;
 
 public interface LinkRepository {
 
@@ -15,5 +16,7 @@ public interface LinkRepository {
 
     void updateLink(LinkDTO linkDTO);
 
-    LinkDTO getLinkDTO(long linkId);
+    List<LinkDTO> getLinksToUpdate();
+
+    @Transactional List<Long> getChatIdsForLink(Long linkId);
 }
