@@ -1,7 +1,8 @@
-package edu.java.services;
+package edu.java.services.jdbc;
 
 import edu.java.exception.RequestException;
 import edu.java.repository.ChatRepository;
+import edu.java.services.ChatService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

@@ -1,4 +1,4 @@
-package edu.java.repository;
+package edu.java.repository.mappers;
 
 import edu.java.dto.LinkDTO;
 import java.net.URI;

@@ -1,17 +1,20 @@
-package edu.java.repository;
+package edu.java.repository.jdbc;
 
 import edu.java.dto.ChatDTO;
+import edu.java.repository.ChatRepository;
+import edu.java.repository.mappers.ChatMapper;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
-import java.util.List;
 
 @Repository
 @RequiredArgsConstructor
 public class JdbcChatRepository implements ChatRepository {
 
     private final JdbcTemplate jdbcTemplate;
+
     @Override
     @Transactional
     public void add(Long chatId) {
@@ -27,7 +30,7 @@ public class JdbcChatRepository implements ChatRepository {
     @Override
     @Transactional
     public List<ChatDTO> findAll() {
-        return jdbcTemplate.query("select (*) from chat", new ChatMapper());
+        return jdbcTemplate.query("select id from chat", new ChatMapper());
     }
 
     @Override

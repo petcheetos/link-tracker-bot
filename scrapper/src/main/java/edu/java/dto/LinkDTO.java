@@ -4,5 +4,5 @@ import jakarta.validation.constraints.NotNull;
 import java.net.URI;
 import java.time.OffsetDateTime;
 
-public record LinkDTO(@NotNull long id, @NotNull URI url, OffsetDateTime last_updated) {
+public record LinkDTO(@NotNull long id, @NotNull URI url, OffsetDateTime lastUpdated) {
 }

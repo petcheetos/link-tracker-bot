@@ -7,10 +7,13 @@ import java.util.List;
 
 public interface LinkRepository {
 
-    void add(long chatId, URI link);
+    LinkResponse add(long chatId, URI link);
 
-    void remove(long chatId, URI link);
+    LinkResponse remove(long chatId, URI link);
 
-    List<LinkResponse> findAll(long chatId);
+    List<LinkResponse> findAllByChat(long chatId);
 
+    void updateLink(LinkDTO linkDTO);
+
+    LinkDTO getLinkDTO(long linkId);
 }

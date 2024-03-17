@@ -1,10 +1,10 @@
-package edu.java.repository;
+package edu.java.repository.mappers;
 
 import edu.java.models.LinkResponse;
-import org.springframework.jdbc.core.RowMapper;
 import java.net.URI;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import org.springframework.jdbc.core.RowMapper;
 
 public class LinkResponseMapper implements RowMapper<LinkResponse> {
     @Override

@@ -1,9 +1,9 @@
 package edu.java.services;
 
 import edu.java.models.LinkResponse;
-import org.springframework.stereotype.Service;
 import java.net.URI;
 import java.util.List;
+import org.springframework.stereotype.Service;
 
 @Service
 public interface LinkService {
@@ -13,6 +13,4 @@ public interface LinkService {
     LinkResponse addLink(long chatId, URI link);
 
     LinkResponse deleteLink(long chatId, URI link);
-
 }
-
