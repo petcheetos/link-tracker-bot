@@ -20,4 +20,6 @@ public interface LinkRepository {
     LinkDTO findByUri(URI uri);
 
     List<Long> getChatIdsForLink(Long linkId);
+
+    void checkLink(LinkDTO linkDTO);
 }

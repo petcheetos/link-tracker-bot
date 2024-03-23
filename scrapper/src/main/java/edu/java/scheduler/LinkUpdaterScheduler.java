@@ -44,6 +44,8 @@ public class LinkUpdaterScheduler {
                     botClient.sendUpdate(new LinkUpdateRequest(linkDTO.id(), linkDTO.url(),
                         "github update", linkRepository.getChatIdsForLink(linkDTO.id())
                     ));
+                } else {
+                    linkRepository.checkLink(linkDTO);
                 }
             } else if (linkProcessor.isStackoverflowUrl(linkDTO.url())) {
                 String idStr = linkProcessor.getQuestionId(linkDTO.url());
@@ -56,6 +58,8 @@ public class LinkUpdaterScheduler {
                         botClient.sendUpdate(new LinkUpdateRequest(linkDTO.id(), linkDTO.url(),
                             "stackoverflow update", linkRepository.getChatIdsForLink(linkDTO.id())
                         ));
+                    } else {
+                        linkRepository.checkLink(linkDTO);
                     }
                 }
             }

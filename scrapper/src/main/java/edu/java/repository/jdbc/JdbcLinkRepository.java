@@ -27,8 +27,9 @@ public class JdbcLinkRepository implements LinkRepository {
             linkDTO = findByUri(link);
         } catch (DataAccessException e) {
             jdbcTemplate.update(
-                "insert into link (url, last_updated) values (?, ?)",
+                "insert into link (url, last_updated, checked_at) values (?, ?, ?)",
                 link.toString(),
+                OffsetDateTime.now(),
                 OffsetDateTime.now()
             );
             linkDTO = findByUri(link);
@@ -107,5 +108,13 @@ public class JdbcLinkRepository implements LinkRepository {
             linkId
         );
         return chatIds.isEmpty() ? null : chatIds;
+    }
+
+    @Override
+    @Transactional
+    public void checkLink(LinkDTO linkDTO) {
+        OffsetDateTime currentTime = OffsetDateTime.now();
+        jdbcTemplate.update("update link set checked_at = (?) "
+            + "where url = (?)", currentTime, linkDTO.url().toString());
     }
 }
