@@ -64,8 +64,8 @@ public class JdbcLinkRepository implements LinkRepository {
     @Transactional
     public void updateLink(LinkDTO linkDTO) {
         OffsetDateTime currentTime = OffsetDateTime.now();
-        jdbcTemplate.update("update link set last_updated = (?), checked_at = (?) "
-            + "where url = (?)", linkDTO.lastUpdated(), currentTime, linkDTO.url().toString());
+        jdbcTemplate.update("update link set last_updated = (?), checked_at = (?) where url = (?)",
+            linkDTO.lastUpdated(), currentTime, linkDTO.url().toString());
     }
 
     @Override
