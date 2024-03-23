@@ -24,6 +24,7 @@ public class JdbcServiceTest extends IntegrationTest {
     @Test
     @Transactional
     void testRegisterChatTwiceThrowsException() {
+        chatService.registerChat(1L);
         assertThrows(RequestException.class, () -> chatService.registerChat(1L));
     }
 

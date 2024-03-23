@@ -9,6 +9,7 @@ import java.net.URI;
 import java.time.OffsetDateTime;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,13 +22,19 @@ public class JdbcLinkRepository implements LinkRepository {
     @Override
     @Transactional
     public LinkResponse add(long chatId, URI link) {
-        Long linkId = jdbcTemplate.queryForObject(
-            "insert into link (url) values (?) returning id",
-            Long.class,
-            link.toString()
-        );
-        jdbcTemplate.update("insert into chat_links (chat_id, link_id) values (?, ?)", chatId, linkId);
-        return new LinkResponse(linkId, link);
+        LinkDTO linkDTO;
+        try {
+            linkDTO = findByUri(link);
+        } catch (DataAccessException e) {
+            jdbcTemplate.update(
+                "insert into link (url, last_updated) values (?, ?)",
+                link.toString(),
+                OffsetDateTime.now()
+            );
+            linkDTO = findByUri(link);
+        }
+        jdbcTemplate.update("insert into chat_links (chat_id, link_id) values (?, ?)", chatId, linkDTO.id());
+        return new LinkResponse(linkDTO.id(), linkDTO.url());
     }
 
     @Override
@@ -61,10 +68,19 @@ public class JdbcLinkRepository implements LinkRepository {
     }
 
     @Override
+    @Transactional
     public List<LinkDTO> getLinksToUpdate() {
         return jdbcTemplate.query(
             "select * from link where checked_at < timezone('utc', now()) - interval '10 minute'",
             new LinkMapper()
+        );
+    }
+
+    @Override
+    @Transactional
+    public LinkDTO findByUri(URI uri) throws DataAccessException {
+        return jdbcTemplate.queryForObject("select * from link where url = (?)",
+            new LinkMapper(), uri.toString()
         );
     }
 

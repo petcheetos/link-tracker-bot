@@ -2,6 +2,7 @@ package edu.java.scrapper.repository;
 
 import edu.java.dto.LinkDTO;
 import edu.java.models.LinkResponse;
+import edu.java.repository.ChatRepository;
 import edu.java.repository.LinkRepository;
 import edu.java.scrapper.IntegrationTest;
 import java.net.URI;
@@ -23,14 +24,17 @@ public class JdbcLinkRepositoryTest extends IntegrationTest {
     private JdbcTemplate jdbcTemplate;
     @Autowired
     private LinkRepository linkRepository;
+    @Autowired
+    private ChatRepository chatRepository;
 
     @Test
     @Transactional
     @Rollback
     public void testAddLink() {
         long chatId = 1L;
+        chatRepository.add(chatId);
         String url = "github.com";
-        LinkResponse response = linkRepository.add(chatId, URI.create(url));
+        linkRepository.add(chatId, URI.create(url));
         Long count = jdbcTemplate.queryForObject("select count(id) from link where url = ?", Long.class, url);
         assertThat(count).isEqualTo(1);
     }
@@ -39,6 +43,7 @@ public class JdbcLinkRepositoryTest extends IntegrationTest {
     @Transactional
     @Rollback
     public void testRemoveLinks() {
+        chatRepository.add(1L);
         LinkResponse response = linkRepository.add(1L, URI.create("github.com"));
         linkRepository.remove(1L, response.url());
         assertFalse(linkRepository.findAllByChat(1L).contains(response));
@@ -49,6 +54,7 @@ public class JdbcLinkRepositoryTest extends IntegrationTest {
     @Rollback
     public void testFindAll() {
         long chatId = 1L;
+        chatRepository.add(chatId);
         LinkResponse link = linkRepository.add(1L, URI.create("github.com"));
         List<LinkResponse> list = linkRepository.findAllByChat(chatId);
         assertThat(list).contains(link);
