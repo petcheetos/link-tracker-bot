@@ -2,8 +2,8 @@ package edu.java.scrapper.services;
 
 import edu.java.exception.RequestException;
 import edu.java.scrapper.IntegrationTest;
-import edu.java.services.jpa.JpaChatService;
-import edu.java.services.jpa.JpaLinkService;
+import edu.java.services.ChatService;
+import edu.java.services.LinkService;
 import java.net.URI;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,14 +15,16 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest
 public class JpaServiceTest extends IntegrationTest {
-    @Autowired
-    private JpaChatService chatService;
 
     @Autowired
-    private JpaLinkService linkService;
+    private ChatService chatService;
+
+    @Autowired
+    private LinkService linkService;
 
     @Test
     @Transactional
+    @Rollback
     void testRegisterChatTwiceThrowsException() {
         chatService.registerChat(1L);
         assertThrows(RequestException.class, () -> chatService.registerChat(1L));

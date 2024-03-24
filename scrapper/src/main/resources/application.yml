@@ -1,5 +1,5 @@
 app:
-  database-access-type: jdbc
+  database-access-type: jpa
   scheduler:
     enable: true
     interval: "PT10M"
@@ -14,6 +14,10 @@ app:
 spring:
   application:
     name: scrapper
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
   datasource:
     driver-class-name: org.postgresql.Driver
     username: postgres
