@@ -17,6 +17,4 @@ public class UntrackCommandTest {
     void testStartDescription() {
         assertThat(untrack.description()).isNotBlank();
     }
-
-    //void testExecute()
 }

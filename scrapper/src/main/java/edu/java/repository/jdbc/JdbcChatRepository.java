@@ -2,7 +2,7 @@ package edu.java.repository.jdbc;
 
 import edu.java.dto.ChatDTO;
 import edu.java.repository.ChatRepository;
-import edu.java.repository.mappers.ChatMapper;
+import edu.java.utils.mappers.ChatMapper;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;

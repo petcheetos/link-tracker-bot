@@ -3,8 +3,8 @@ package edu.java.repository.jdbc;
 import edu.java.dto.LinkDTO;
 import edu.java.models.LinkResponse;
 import edu.java.repository.LinkRepository;
-import edu.java.repository.mappers.LinkMapper;
-import edu.java.repository.mappers.LinkResponseMapper;
+import edu.java.utils.mappers.LinkMapper;
+import edu.java.utils.mappers.LinkResponseMapper;
 import java.net.URI;
 import java.time.OffsetDateTime;
 import java.util.List;
@@ -65,7 +65,8 @@ public class JdbcLinkRepository implements LinkRepository {
     public void updateLink(LinkDTO linkDTO) {
         OffsetDateTime currentTime = OffsetDateTime.now();
         jdbcTemplate.update("update link set last_updated = (?), checked_at = (?) where url = (?)",
-            linkDTO.lastUpdated(), currentTime, linkDTO.url().toString());
+            linkDTO.lastUpdated(), currentTime, linkDTO.url().toString()
+        );
     }
 
     @Override

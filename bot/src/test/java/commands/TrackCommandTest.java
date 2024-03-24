@@ -17,6 +17,4 @@ public class TrackCommandTest {
     void testStartDescription() {
         assertThat(track.description()).isNotBlank();
     }
-
-    //void testExecute()
 }

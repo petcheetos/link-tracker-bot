@@ -17,8 +17,4 @@ public class ListCommandTest {
     void testListDescription() {
         assertThat(list.description()).isNotBlank();
     }
-
-    //void testExecute()
-
-    //void testExecuteWithEmptyList()
 }

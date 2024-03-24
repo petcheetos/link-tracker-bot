@@ -9,11 +9,13 @@ import edu.java.bot.commands.UntrackCommand;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @SuppressWarnings("HideUtilityClassConstructor")
 @Configuration
+@RequiredArgsConstructor
 public class CommandConfig {
 
     @Bean
