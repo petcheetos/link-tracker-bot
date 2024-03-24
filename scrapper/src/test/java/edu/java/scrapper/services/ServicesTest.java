@@ -14,7 +14,7 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest
-public class JpaServiceTest extends IntegrationTest {
+public class ServicesTest extends IntegrationTest {
 
     @Autowired
     private ChatService chatService;
