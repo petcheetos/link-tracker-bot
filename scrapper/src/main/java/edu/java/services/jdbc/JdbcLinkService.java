@@ -1,11 +1,11 @@
 package edu.java.services.jdbc;
 
-import edu.java.utils.LinkProcessor;
 import edu.java.exception.RequestException;
 import edu.java.models.LinkResponse;
 import edu.java.repository.ChatRepository;
 import edu.java.repository.LinkRepository;
 import edu.java.services.LinkService;
+import edu.java.utils.LinkProcessor;
 import java.net.URI;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
