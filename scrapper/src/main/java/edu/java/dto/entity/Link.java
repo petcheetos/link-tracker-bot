@@ -2,14 +2,15 @@ package edu.java.dto.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
 import java.time.OffsetDateTime;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -26,11 +27,11 @@ import lombok.ToString;
 public class Link {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY) //sequence, generator = "sequence-generator"
     @Column(name = "id")
     private Long id;
 
-    @Column(name = "url", unique = true, nullable = false)
+    @Column(name = "url", nullable = false)
     private String url;
 
     @Column(name = "last_updated")
@@ -39,6 +40,16 @@ public class Link {
     @Column(name = "checked_at")
     private OffsetDateTime checkedAt;
 
-    @OneToMany(mappedBy = "link")
-    private List<ChatLink> chatLinks = new ArrayList<>();
+    @ManyToMany(
+        fetch = FetchType.LAZY,
+        mappedBy = "trackedLinks"
+    )
+    private Set<Chat> trackingChats;
+
+    public Link(String url) {
+        this.url = url;
+        this.lastUpdated = OffsetDateTime.now();
+        this.checkedAt = OffsetDateTime.now().minusDays(1);
+        this.trackingChats = new HashSet<>();
+    }
 }

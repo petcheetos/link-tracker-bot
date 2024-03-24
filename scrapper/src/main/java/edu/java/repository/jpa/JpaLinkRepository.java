@@ -23,6 +23,6 @@ public interface JpaLinkRepository extends JpaRepository<Link, Long> {
     @Query("update Link set checkedAt = :checkedAt where url = :url")
     void updateCheckedAt(String url, OffsetDateTime checkedAt);
 
-    @Query("select cl.chat.id from ChatLink cl where cl.link.id = :linkId")
-    List<Long> findChatIdsByLink(Long linkId);
+    @Query("select c.id from Chat c join c.trackedLinks l where l = :link")
+    List<Long> findChatIdsByLink(Link link);
 }

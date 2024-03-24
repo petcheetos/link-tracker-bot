@@ -4,6 +4,7 @@ import edu.java.dto.entity.Chat;
 import edu.java.exception.RequestException;
 import edu.java.repository.jpa.JpaChatRepository;
 import edu.java.services.ChatService;
+import java.util.HashSet;
 import lombok.RequiredArgsConstructor;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,8 +19,8 @@ public class JpaChatService implements ChatService {
         if (chatRepository.existsById(chatId)) {
             throw new RequestException("Chat already registered");
         }
-        chatRepository.save(Chat.builder()
-            .id(chatId).build());
+        Chat chat = new Chat(chatId, new HashSet<>());
+        chatRepository.save(chat);
     }
 
     @Override

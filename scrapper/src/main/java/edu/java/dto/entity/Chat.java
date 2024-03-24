@@ -1,29 +1,43 @@
 package edu.java.dto.entity;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Set;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 
 @Entity
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
-@ToString(exclude = "chatLinks")
 @Table(name = "chat")
 public class Chat {
     @Id
+    @Column(name = "id")
     private Long id;
 
-    @Builder.Default
-    @OneToMany(mappedBy = "chat")
-    private List<ChatLink> chatLinks = new ArrayList<>();
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+        name = "chat_links",
+        joinColumns = @JoinColumn(name = "chat_id"),
+        inverseJoinColumns = @JoinColumn(name = "link_id")
+    )
+    private Set<Link> trackedLinks;
+
+    public void addLink(Link link) {
+        trackedLinks.add(link);
+        link.getTrackingChats().add(this);
+    }
+
+    public void removeLink(Link link) {
+        trackedLinks.removeIf(l -> l.getId().equals(link.getId()));
+        link.getTrackingChats().remove(this);
+    }
 }

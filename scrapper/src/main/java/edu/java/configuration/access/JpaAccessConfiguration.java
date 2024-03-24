@@ -3,7 +3,6 @@ package edu.java.configuration.access;
 import edu.java.clients.BotClient;
 import edu.java.clients.GitHubClient;
 import edu.java.clients.StackoverflowClient;
-import edu.java.repository.jpa.JpaChatLinkRepository;
 import edu.java.repository.jpa.JpaChatRepository;
 import edu.java.repository.jpa.JpaLinkRepository;
 import edu.java.services.ChatService;
@@ -25,13 +24,11 @@ public class JpaAccessConfiguration {
     public LinkService linkService(
         LinkProcessor linkValidator,
         JpaLinkRepository linkRepository,
-        JpaChatLinkRepository chatLinkRepository,
         JpaChatRepository chatRepository
     ) {
         return new JpaLinkService(
             linkValidator,
             linkRepository,
-            chatLinkRepository,
             chatRepository
         );
     }

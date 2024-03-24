@@ -34,8 +34,9 @@ public class JpaLinkUpdater implements LinkUpdater {
                     || response.pushedAt().isAfter(link.getLastUpdated())) {
                     linkRepository.updateLastUpdatedAt(link.getUrl(), OffsetDateTime.now());
                     botClient.sendUpdate(new LinkUpdateRequest(link.getId(), URI.create(link.getUrl()),
-                        "Github link update", linkRepository.findChatIdsByLink(link.getId())
-                    ));
+                            "Github link update", linkRepository.findChatIdsByLink(link)
+                        )
+                    );
                 } else {
                     linkRepository.updateCheckedAt(link.getUrl(), OffsetDateTime.now());
                 }
@@ -48,7 +49,7 @@ public class JpaLinkUpdater implements LinkUpdater {
                     if (time.isAfter(link.getLastUpdated())) {
                         linkRepository.updateLastUpdatedAt(link.getUrl(), OffsetDateTime.now());
                         botClient.sendUpdate(new LinkUpdateRequest(link.getId(), URI.create(link.getUrl()),
-                            "Stackoverflow link update", linkRepository.findChatIdsByLink(link.getId())
+                            "Stackoverflow link update", linkRepository.findChatIdsByLink(link)
                         ));
                     } else {
                         linkRepository.updateCheckedAt(link.getUrl(), OffsetDateTime.now());
