@@ -38,7 +38,7 @@ public class JpaLinkService implements LinkService {
     public LinkResponse addLink(long chatId, URI link) {
         checkChatIfNotExist(chatId);
         if (!linkValidator.isValid(link)) {
-            throw new RequestException("Incorrect link");
+            throw new RequestException("Sorry, so far I can only track GitHub and StackOverflow \uD83D\uDE1F");
         }
         Chat chat = chatRepository.findById(chatId).get();
         var optionalLink = linkRepository.findByUrl(link.toString());
