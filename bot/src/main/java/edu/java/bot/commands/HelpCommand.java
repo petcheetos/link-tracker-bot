@@ -31,7 +31,7 @@ public class HelpCommand implements Command {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append(HELP_TITLE);
         for (Command cmd : commandList) {
-            stringBuilder.append("\t■ ").append(cmd.name()).append(" - ").append(cmd.description()).append("\n");
+            stringBuilder.append("\t- ").append(cmd.name()).append(" - ").append(cmd.description()).append("\n");
         }
         return stringBuilder.toString();
     }

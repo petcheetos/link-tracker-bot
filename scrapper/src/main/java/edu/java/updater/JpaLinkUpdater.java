@@ -34,11 +34,12 @@ public class JpaLinkUpdater implements LinkUpdater {
                     || response.pushedAt().isAfter(link.getLastUpdated())) {
                     linkRepository.updateLastUpdatedAt(link.getUrl(), OffsetDateTime.now());
                     botClient.sendUpdate(new LinkUpdateRequest(link.getId(), URI.create(link.getUrl()),
-                            "\uD83C\uDF3A New update by link: ", linkRepository.findChatIdsByLink(link)
+                            "Github link update", linkRepository.findChatIdsByLink(link)
                         )
                     );
+                } else {
+                    linkRepository.updateCheckedAt(link.getUrl(), OffsetDateTime.now());
                 }
-                linkRepository.updateCheckedAt(link.getUrl(), OffsetDateTime.now());
             } else if (linkProcessor.isStackoverflowUrl(URI.create(link.getUrl()))) {
                 String idStr = linkProcessor.getQuestionId(URI.create(link.getUrl()));
                 StackoverflowResponse response = stackoverflowClient.getUpdate(idStr);
@@ -48,10 +49,11 @@ public class JpaLinkUpdater implements LinkUpdater {
                     if (time.isAfter(link.getLastUpdated())) {
                         linkRepository.updateLastUpdatedAt(link.getUrl(), OffsetDateTime.now());
                         botClient.sendUpdate(new LinkUpdateRequest(link.getId(), URI.create(link.getUrl()),
-                            "\uD83C\uDF80 New update by link: ", linkRepository.findChatIdsByLink(link)
+                            "Stackoverflow link update", linkRepository.findChatIdsByLink(link)
                         ));
+                    } else {
+                        linkRepository.updateCheckedAt(link.getUrl(), OffsetDateTime.now());
                     }
-                    linkRepository.updateCheckedAt(link.getUrl(), OffsetDateTime.now());
                 }
             }
         });
