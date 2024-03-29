@@ -30,7 +30,7 @@ public class CommandServiceTest {
         Update update = Mockito.mock(Update.class, Mockito.RETURNS_DEEP_STUBS);
         Mockito.when(update.message().text()).thenReturn("/unknown");
         String msg = botCommandService.createResponse(update, clientService);
-        assertThat(msg).isEqualTo("I do not know this command :(");
+        assertThat(msg).isEqualTo("I do not know this command 😲");
     }
 
     @Test
@@ -38,7 +38,7 @@ public class CommandServiceTest {
         Update update = Mockito.mock(Update.class, Mockito.RETURNS_DEEP_STUBS);
         Mockito.when(update.message().text()).thenReturn("/track");
         String msg = botCommandService.createResponse(update, clientService);
-        assertThat(msg).isEqualTo("Empty link! Type /track link");
+        assertThat(msg).isEqualTo("Empty link! ✏️ Type /track link");
     }
 
     @Test
@@ -46,7 +46,7 @@ public class CommandServiceTest {
         Update update = Mockito.mock(Update.class, Mockito.RETURNS_DEEP_STUBS);
         Mockito.when(update.message().text()).thenReturn("/untrack");
         String msg = botCommandService.createResponse(update, clientService);
-        assertThat(msg).isEqualTo("Empty link! Type /untrack link");
+        assertThat(msg).isEqualTo("Empty link! ✏️ Type /untrack link");
     }
 
     @Test
@@ -56,10 +56,10 @@ public class CommandServiceTest {
         String msg = botCommandService.createResponse(update, clientService);
         assertThat(msg).isEqualTo("""
             Commands:
-            \t- /start - Register a user
-            \t- /list - Send a list of tracking sites
-            \t- /track - Add link for tracking
-            \t- /untrack - Remove a site from the tracking list
+            	■ /start - Register a user
+            	■ /list - Send a list of tracking sites
+            	■ /track - Add link for tracking
+            	■ /untrack - Remove a site from the tracking list
             """);
     }
 }
