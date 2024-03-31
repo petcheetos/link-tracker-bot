@@ -26,7 +26,7 @@ public class BotClientTest {
                 .withStatus(200)
                 .withHeader("Content-Type", "application/json")
                 .withBody("Update processed")));
-        String response = botClient.retrySendUpdate(new LinkUpdateRequest(1L, URI.create("1"), "1", List.of(1L)));
+        String response = botClient.sendUpdate(new LinkUpdateRequest(1L, URI.create("1"), "1", List.of(1L)));
         assertThat(response).isEqualTo("Update processed");
     }
 }
