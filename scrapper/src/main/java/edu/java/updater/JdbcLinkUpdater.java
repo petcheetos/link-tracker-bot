@@ -27,11 +27,11 @@ public class JdbcLinkUpdater implements LinkUpdater {
         list.forEach(linkDTO -> {
             if (linkProcessor.isGithubUrl(linkDTO.url())) {
                 List<String> info = linkProcessor.getUserRepoName(linkDTO.url());
-                GitHubResponse response = gitHubClient.getRepositoryInfo(info.getFirst(), info.getLast());
+                GitHubResponse response = gitHubClient.retryGetRepositoryInfo(info.getFirst(), info.getLast());
                 if (response.updatedAt().isAfter(linkDTO.lastUpdated())
                     || response.pushedAt().isAfter(linkDTO.lastUpdated())) {
                     linkRepository.updateLink(linkDTO);
-                    botClient.sendUpdate(new LinkUpdateRequest(linkDTO.id(), linkDTO.url(),
+                    botClient.retrySendUpdate(new LinkUpdateRequest(linkDTO.id(), linkDTO.url(),
                         "Github link update", linkRepository.getChatIdsForLink(linkDTO.id())
                     ));
                 } else {
@@ -39,13 +39,13 @@ public class JdbcLinkUpdater implements LinkUpdater {
                 }
             } else if (linkProcessor.isStackoverflowUrl(linkDTO.url())) {
                 String idStr = linkProcessor.getQuestionId(linkDTO.url());
-                StackoverflowResponse response = stackoverflowClient.getUpdate(idStr);
+                StackoverflowResponse response = stackoverflowClient.retryGetUpdate(idStr);
                 List<StackoverflowResponse.ItemResponse> itemResponses = response.items();
                 for (var item : itemResponses) {
                     OffsetDateTime time = item.lastActivityDate();
                     if (time.isAfter(linkDTO.lastUpdated())) {
                         linkRepository.updateLink(linkDTO);
-                        botClient.sendUpdate(new LinkUpdateRequest(linkDTO.id(), linkDTO.url(),
+                        botClient.retrySendUpdate(new LinkUpdateRequest(linkDTO.id(), linkDTO.url(),
                             "Stackoverflow link update", linkRepository.getChatIdsForLink(linkDTO.id())
                         ));
                     } else {

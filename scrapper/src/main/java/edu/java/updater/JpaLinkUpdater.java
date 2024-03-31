@@ -29,11 +29,11 @@ public class JpaLinkUpdater implements LinkUpdater {
         list.forEach(link -> {
             if (linkProcessor.isGithubUrl(URI.create(link.getUrl()))) {
                 List<String> info = linkProcessor.getUserRepoName(URI.create(link.getUrl()));
-                GitHubResponse response = gitHubClient.getRepositoryInfo(info.getFirst(), info.getLast());
+                GitHubResponse response = gitHubClient.retryGetRepositoryInfo(info.getFirst(), info.getLast());
                 if (response.updatedAt().isAfter(link.getLastUpdated())
                     || response.pushedAt().isAfter(link.getLastUpdated())) {
                     linkRepository.updateLastUpdatedAt(link.getUrl(), OffsetDateTime.now());
-                    botClient.sendUpdate(new LinkUpdateRequest(link.getId(), URI.create(link.getUrl()),
+                    botClient.retrySendUpdate(new LinkUpdateRequest(link.getId(), URI.create(link.getUrl()),
                             "\uD83C\uDF3A New update by link: ", linkRepository.findChatIdsByLink(link)
                         )
                     );
@@ -41,13 +41,13 @@ public class JpaLinkUpdater implements LinkUpdater {
                 linkRepository.updateCheckedAt(link.getUrl(), OffsetDateTime.now());
             } else if (linkProcessor.isStackoverflowUrl(URI.create(link.getUrl()))) {
                 String idStr = linkProcessor.getQuestionId(URI.create(link.getUrl()));
-                StackoverflowResponse response = stackoverflowClient.getUpdate(idStr);
+                StackoverflowResponse response = stackoverflowClient.retryGetUpdate(idStr);
                 List<StackoverflowResponse.ItemResponse> itemResponses = response.items();
                 for (var item : itemResponses) {
                     OffsetDateTime time = item.lastActivityDate();
                     if (time.isAfter(link.getLastUpdated())) {
                         linkRepository.updateLastUpdatedAt(link.getUrl(), OffsetDateTime.now());
-                        botClient.sendUpdate(new LinkUpdateRequest(link.getId(), URI.create(link.getUrl()),
+                        botClient.retrySendUpdate(new LinkUpdateRequest(link.getId(), URI.create(link.getUrl()),
                             "\uD83C\uDF80 New update by link: ", linkRepository.findChatIdsByLink(link)
                         ));
                     }
