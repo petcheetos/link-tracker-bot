@@ -36,33 +36,42 @@ public class LinkUpdaterScheduler {
         List<LinkDTO> list = linkRepository.getLinksToUpdate();
         list.forEach(linkDTO -> {
             if (linkProcessor.isGithubUrl(linkDTO.url())) {
-                List<String> info = linkProcessor.getUserRepoName(linkDTO.url());
-                GitHubResponse response = gitHubClient.getRepositoryInfo(info.getFirst(), info.getLast());
-                if (response.updatedAt().isAfter(linkDTO.lastUpdated())
-                    || response.pushedAt().isAfter(linkDTO.lastUpdated())) {
-                    linkRepository.updateLink(linkDTO);
-                    botClient.sendUpdate(new LinkUpdateRequest(linkDTO.id(), linkDTO.url(),
-                        "github update", linkRepository.getChatIdsForLink(linkDTO.id())
-                    ));
-                } else {
-                    linkRepository.checkLink(linkDTO);
-                }
+                processGithubUpdate(linkDTO);
             } else if (linkProcessor.isStackoverflowUrl(linkDTO.url())) {
-                String idStr = linkProcessor.getQuestionId(linkDTO.url());
-                StackoverflowResponse response = stackoverflowClient.getUpdate(idStr);
-                List<StackoverflowResponse.ItemResponse> itemResponses = response.items();
-                for (var item : itemResponses) {
-                    OffsetDateTime time = item.lastActivityDate();
-                    if (time.isAfter(linkDTO.lastUpdated())) {
-                        linkRepository.updateLink(linkDTO);
-                        botClient.sendUpdate(new LinkUpdateRequest(linkDTO.id(), linkDTO.url(),
-                            "stackoverflow update", linkRepository.getChatIdsForLink(linkDTO.id())
-                        ));
-                    } else {
-                        linkRepository.checkLink(linkDTO);
-                    }
-                }
+                processStackoverflowUpdate(linkDTO);
             }
         });
+    }
+
+    private void processGithubUpdate(LinkDTO linkDTO) {
+        List<String> info = linkProcessor.getUserRepoName(linkDTO.url());
+        GitHubResponse response = gitHubClient.getRepositoryInfo(info.getFirst(), info.getLast());
+        if (response.updatedAt().isAfter(linkDTO.lastUpdated())
+            || response.pushedAt().isAfter(linkDTO.lastUpdated())) {
+            pushUpdate(linkDTO);
+        } else {
+            linkRepository.checkLink(linkDTO);
+        }
+    }
+
+    private void processStackoverflowUpdate(LinkDTO linkDTO) {
+        String idStr = linkProcessor.getQuestionId(linkDTO.url());
+        StackoverflowResponse response = stackoverflowClient.getUpdate(idStr);
+        List<StackoverflowResponse.ItemResponse> itemResponses = response.items();
+        for (var item : itemResponses) {
+            OffsetDateTime time = item.lastActivityDate();
+            if (time.isAfter(linkDTO.lastUpdated())) {
+                pushUpdate(linkDTO);
+            } else {
+                linkRepository.checkLink(linkDTO);
+            }
+        }
+    }
+
+    private void pushUpdate(LinkDTO linkDTO) {
+        linkRepository.updateLink(linkDTO);
+        botClient.sendUpdate(new LinkUpdateRequest(linkDTO.id(), linkDTO.url(),
+            "\uD83C\uDF3A New update by link: ", linkRepository.getChatIdsForLink(linkDTO.id())
+        ));
     }
 }
