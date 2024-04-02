@@ -16,13 +16,11 @@ public class JdbcChatRepository implements ChatRepository {
     private final JdbcTemplate jdbcTemplate;
 
     @Override
-    @Transactional
     public void add(Long chatId) {
         jdbcTemplate.update("insert into chat (id) values (?)", chatId);
     }
 
     @Override
-    @Transactional
     public void remove(Long chatId) {
         jdbcTemplate.update("delete from chat where id = (?)", chatId);
     }
