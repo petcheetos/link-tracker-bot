@@ -16,17 +16,13 @@ public class ChatLinkExtractor implements ResultSetExtractor<List<ChatLinkDTO>> 
     @Override
     public List<ChatLinkDTO> extractData(ResultSet rs) throws SQLException, DataAccessException {
         Map<Long, ChatLinkDTO> chatLinkDTOMap = new HashMap<>();
-        List<ChatLinkDTO> res = new ArrayList<>();
         while (rs.next()) {
             long linkId = rs.getLong("link_id");
-            Long chatId = rs.getLong("chat_id");
-            ChatLinkDTO chatLinkDTO =
-                chatLinkDTOMap.computeIfAbsent(linkId, dto -> new ChatLinkDTO(linkId, new HashSet<>()));
+            long chatId = rs.getLong("chat_id");
+            ChatLinkDTO chatLinkDTO = chatLinkDTOMap.getOrDefault(linkId, new ChatLinkDTO(linkId, new HashSet<>()));
             chatLinkDTO.chatIds().add(chatId);
-            if (!res.contains(chatLinkDTO)) {
-                res.add(chatLinkDTO);
-            }
+            chatLinkDTOMap.put(linkId, chatLinkDTO);
         }
-        return res;
+        return new ArrayList<>(chatLinkDTOMap.values());
     }
 }
