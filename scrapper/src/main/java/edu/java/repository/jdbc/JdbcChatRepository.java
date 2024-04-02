@@ -28,13 +28,13 @@ public class JdbcChatRepository implements ChatRepository {
     }
 
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public List<ChatDTO> findAll() {
         return jdbcTemplate.query("select id from chat", new ChatMapper());
     }
 
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public boolean exist(Long chatId) {
         Integer count = jdbcTemplate.queryForObject("select count(*) from chat where id = ?", Integer.class, chatId);
         return count != null && count > 0;

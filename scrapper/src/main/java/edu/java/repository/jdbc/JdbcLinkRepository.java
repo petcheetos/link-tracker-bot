@@ -52,7 +52,7 @@ public class JdbcLinkRepository implements LinkRepository {
     }
 
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public List<LinkResponse> findAllByChat(long chatId) {
         return jdbcTemplate.query("select link.* from link "
                 + "join chat_links on link.id = chat_links.link_id where chat_links.chat_id = ?",
@@ -69,7 +69,7 @@ public class JdbcLinkRepository implements LinkRepository {
     }
 
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public List<LinkDTO> getLinksToUpdate() {
         return jdbcTemplate.query(
             "select * from link where checked_at < timezone('utc', now()) - interval '10 minute'",
@@ -78,14 +78,14 @@ public class JdbcLinkRepository implements LinkRepository {
     }
 
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public LinkDTO findByUri(URI uri) throws DataAccessException {
         return jdbcTemplate.queryForObject("select * from link where url = (?)",
             new LinkMapper(), uri.toString()
         );
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     protected Long exist(URI link) {
         List<Long> result = jdbcTemplate.query(
             "select id from link where url = ?",
@@ -97,7 +97,7 @@ public class JdbcLinkRepository implements LinkRepository {
     }
 
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public List<Long> getChatIdsForLink(Long linkId) {
         if (linkId == null) {
             return null;
