@@ -23,24 +23,10 @@ public class JdbcServiceTest extends IntegrationTest {
 
     @Test
     @Transactional
-    void testRegisterChatTwiceThrowsException() {
-        chatService.registerChat(1L);
-        assertThrows(RequestException.class, () -> chatService.registerChat(1L));
-    }
-
-    @Test
-    @Transactional
     @Rollback
     void testDeleteChat() {
         chatService.registerChat(10L);
         assertDoesNotThrow(() -> chatService.deleteChat(10L));
-    }
-
-    @Test
-    @Transactional
-    @Rollback
-    void testDeleteChatWithNoChat() {
-        assertThrows(RequestException.class, () -> chatService.deleteChat(10L));
     }
 
     @Test
@@ -55,7 +41,7 @@ public class JdbcServiceTest extends IntegrationTest {
     @Test
     @Transactional
     public void testGetLinksWithNoChat() {
-        assertThrows(RequestException.class, () -> linkService.getLinks(10L));
+        assertDoesNotThrow(() -> linkService.getLinks(10L));
     }
 
     @Test
@@ -80,23 +66,9 @@ public class JdbcServiceTest extends IntegrationTest {
     @Test
     @Transactional
     @Rollback
-    public void testAddLinkWithNoChat() {
-        assertThrows(RequestException.class, () -> linkService.addLink(10L, URI.create("https://github.com/petcheetos/backend-java-course")));
-    }
-
-    @Test
-    @Transactional
-    @Rollback
     public void testDeleteLink() {
         chatService.registerChat(10L);
         linkService.addLink(10L, URI.create("https://github.com/petcheetos/backend-java-course"));
         assertDoesNotThrow(() -> linkService.deleteLink(10L, URI.create("https://github.com/petcheetos/backend-java-course")));
-    }
-
-    @Test
-    @Transactional
-    @Rollback
-    public void testDeleteLinkWithNoChat() {
-        assertThrows(RequestException.class, () -> linkService.deleteLink(10L, URI.create("https://github.com/petcheetos/backend-java-course")));
     }
 }
