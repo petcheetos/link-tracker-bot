@@ -9,6 +9,7 @@ import edu.java.utils.LinkProcessor;
 import java.net.URI;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.transaction.annotation.Transactional;
 
 @RequiredArgsConstructor
 public class JdbcLinkService implements LinkService {
@@ -17,12 +18,14 @@ public class JdbcLinkService implements LinkService {
     private final LinkProcessor linkValidator;
 
     @Override
+    @Transactional
     public List<LinkResponse> getLinks(long chatId) {
         checkChatDoesNotExist(chatId);
         return linkRepository.findAllByChat(chatId);
     }
 
     @Override
+    @Transactional
     public LinkResponse addLink(long chatId, URI link) {
         checkChatDoesNotExist(chatId);
         checkUrlIsValid(link);

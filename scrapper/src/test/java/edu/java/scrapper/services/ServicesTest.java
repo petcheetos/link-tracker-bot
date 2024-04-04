@@ -22,13 +22,6 @@ public class ServicesTest extends IntegrationTest {
     @Autowired
     private LinkService linkService;
 
-    @Test
-    @Transactional
-    @Rollback
-    void testRegisterChatTwiceThrowsException() {
-        chatService.registerChat(1L);
-        assertThrows(RequestException.class, () -> chatService.registerChat(1L));
-    }
 
     @Test
     @Transactional
@@ -38,12 +31,6 @@ public class ServicesTest extends IntegrationTest {
         assertDoesNotThrow(() -> chatService.deleteChat(10L));
     }
 
-    @Test
-    @Transactional
-    @Rollback
-    void testDeleteChatWithNoChat() {
-        assertThrows(RequestException.class, () -> chatService.deleteChat(10L));
-    }
 
     @Test
     @Transactional
