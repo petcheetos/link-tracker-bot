@@ -1,12 +1,12 @@
 package edu.java.configuration.access;
 
-import edu.java.clients.BotClient;
 import edu.java.clients.GitHubClient;
 import edu.java.clients.StackoverflowClient;
 import edu.java.repository.jdbc.JdbcChatRepository;
 import edu.java.repository.jdbc.JdbcLinkRepository;
 import edu.java.services.ChatService;
 import edu.java.services.LinkService;
+import edu.java.services.Sender;
 import edu.java.services.jdbc.JdbcChatService;
 import edu.java.services.jdbc.JdbcLinkService;
 import edu.java.updater.JdbcLinkUpdater;
@@ -41,14 +41,14 @@ public class JdbcAccessConfiguration {
     @Bean
     public LinkUpdater linkUpdater(
         JdbcLinkRepository linkRepository,
-        BotClient botClient,
+        Sender sender,
         LinkProcessor linkProcessor,
         GitHubClient gitHubClient,
         StackoverflowClient stackoverflowClient
     ) {
         return new JdbcLinkUpdater(
             linkRepository,
-            botClient,
+            sender,
             linkProcessor,
             gitHubClient,
             stackoverflowClient

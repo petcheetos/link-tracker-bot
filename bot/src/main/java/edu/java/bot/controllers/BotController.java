@@ -1,7 +1,7 @@
 package edu.java.bot.controllers;
 
-import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.request.SendMessage;
+import edu.java.bot.services.BotService;
 import edu.java.models.LinkUpdateRequest;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -16,14 +16,14 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 @RequestMapping("/updates")
 public class BotController {
-    private final TelegramBot telegramBot;
+    private final BotService botService;
 
     @PostMapping
     public void processUpdate(@RequestBody LinkUpdateRequest linkRequest) {
         log.info(linkRequest);
         List<Long> tgChatIds = linkRequest.tgChatIds();
         for (var chatID : tgChatIds) {
-            telegramBot.execute(new SendMessage(chatID, linkRequest.description() + linkRequest.url()));
+            botService.execute(new SendMessage(chatID, linkRequest.description() + linkRequest.url()));
         }
     }
 }

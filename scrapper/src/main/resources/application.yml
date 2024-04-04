@@ -10,6 +10,7 @@ app:
     base-url: "https://api.stackexchange.com/2.3/questions/"
   bot-base-url:
     base-url: "http://localhost:8090"
+  use-queue: true
 
 api:
   bot:
@@ -37,6 +38,16 @@ spring:
     username: postgres
     password: postgres
     url: jdbc:postgresql://localhost:5432/scrapper
+
+kafka:
+  topic: "messages.updates"
+  bootstrap-servers: localhost:29091
+  replication-factor: 2
+  partitions: 2
+  acks-mode: all
+  delivery-timeout: 60_000
+  batch-size: 100_000
+  enable-idempotence: true
 
 server:
   port: 8080

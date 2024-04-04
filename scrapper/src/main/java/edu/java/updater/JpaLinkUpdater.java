@@ -1,6 +1,5 @@
 package edu.java.updater;
 
-import edu.java.clients.BotClient;
 import edu.java.clients.GitHubClient;
 import edu.java.clients.StackoverflowClient;
 import edu.java.dto.GitHubResponse;
@@ -8,6 +7,7 @@ import edu.java.dto.StackoverflowResponse;
 import edu.java.dto.entity.Link;
 import edu.java.models.LinkUpdateRequest;
 import edu.java.repository.jpa.JpaLinkRepository;
+import edu.java.services.Sender;
 import edu.java.utils.LinkProcessor;
 import java.net.URI;
 import java.time.OffsetDateTime;
@@ -19,7 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class JpaLinkUpdater implements LinkUpdater {
     private final int minutes = 10;
     private final JpaLinkRepository linkRepository;
-    private final BotClient botClient;
+    private final Sender sender;
     private final LinkProcessor linkProcessor;
     private final GitHubClient gitHubClient;
     private final StackoverflowClient stackoverflowClient;
@@ -62,7 +62,7 @@ public class JpaLinkUpdater implements LinkUpdater {
 
     private void pushUpdate(Link link) {
         linkRepository.updateLastUpdatedAt(link.getUrl(), OffsetDateTime.now());
-        botClient.sendUpdate(new LinkUpdateRequest(link.getId(), URI.create(link.getUrl()),
+        sender.sendUpdate(new LinkUpdateRequest(link.getId(), URI.create(link.getUrl()),
                 "\uD83C\uDF3A New update by link: ", linkRepository.findChatIdsByLink(link)
             )
         );

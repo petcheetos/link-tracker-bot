@@ -2,6 +2,7 @@ app:
   telegram-token: ${TELEGRAM_TOKEN}
   scrapper-base-url:
     base-url: "http://localhost:8080"
+  scrapper-topic-name: "messages.updates"
 
 spring:
   application:
@@ -20,6 +21,21 @@ api:
     retry-policy: constant
     attempts: 3
     http-statuses: INTERNAL_SERVER_ERROR, BAD_GATEWAY, SERVICE_UNAVAILABLE, GATEWAY_TIMEOUT
+
+kafka:
+  group-id: messages-group
+  bootstrap-servers: localhost:29091
+  auto-offset-reset: latest
+  max-poll-interval-ms: 300_000
+  enable-auto-commit: false
+  concurrency: 1
+  dlq:
+    topic: messages.updates_dlq
+    replication-factor: 2
+    partitions: 2
+    acks-mode: all
+    delivery-timeout: 60_000
+    batch-size: 100_000
 
 springdoc:
   swagger-ui:
