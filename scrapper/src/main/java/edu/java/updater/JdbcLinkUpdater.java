@@ -12,13 +12,10 @@ import edu.java.utils.LinkProcessor;
 import java.time.OffsetDateTime;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.springframework.transaction.annotation.Transactional;
 
 @RequiredArgsConstructor
 public class JdbcLinkUpdater implements LinkUpdater {
-    private static final Logger LOGGER = LogManager.getLogger();
 
     private final LinkRepository linkRepository;
     private final BotClient botClient;
@@ -29,7 +26,6 @@ public class JdbcLinkUpdater implements LinkUpdater {
     @Override
     @Transactional
     public void update() {
-        LOGGER.info("updated");
         List<LinkDTO> list = linkRepository.getLinksToUpdate();
         list.forEach(linkDTO -> {
             if (linkProcessor.isGithubUrl(linkDTO.url())) {

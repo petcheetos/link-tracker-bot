@@ -13,13 +13,10 @@ import java.net.URI;
 import java.time.OffsetDateTime;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.springframework.transaction.annotation.Transactional;
 
 @RequiredArgsConstructor
 public class JpaLinkUpdater implements LinkUpdater {
-    private static final Logger LOGGER = LogManager.getLogger();
 
     private final int minutes = 10;
     private final JpaLinkRepository linkRepository;
@@ -31,7 +28,6 @@ public class JpaLinkUpdater implements LinkUpdater {
     @Override
     @Transactional
     public void update() {
-        LOGGER.info("updated");
         List<Link> list = linkRepository.getLinksToUpdate(OffsetDateTime.now().minusMinutes(minutes));
         list.forEach(link -> {
             if (linkProcessor.isGithubUrl(URI.create(link.getUrl()))) {
