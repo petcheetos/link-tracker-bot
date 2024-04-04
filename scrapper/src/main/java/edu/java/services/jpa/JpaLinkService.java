@@ -67,7 +67,6 @@ public class JpaLinkService implements LinkService {
         return null;
     }
 
-    @Transactional
     void checkChatIfNotExist(long chatId) {
         if (!chatRepository.existsById(chatId)) {
             throw new RequestException("Chat does not exist");
