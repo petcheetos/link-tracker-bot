@@ -42,7 +42,7 @@ spring:
 kafka:
   topic: "messages.updates"
   bootstrap-servers: localhost:29091
-  replication-factor: 2
+  replication-factor: 1
   partitions: 2
   acks-mode: all
   delivery-timeout: 60_000

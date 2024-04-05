@@ -54,13 +54,20 @@ services:
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
       KAFKA_BROKER_ID: 1
 
-  kafka-ui:
-    container_name: kafka-ui
-    image: provectuslabs/kafka-ui:latest
-    ports:
-      - "8082:8080"
-    environment:
-      DYNAMIC_CONFIG_ENABLED: true
+  init-kafka:
+    image: confluentinc/cp-kafka:7.2.1
+    depends_on:
+      - kafka
+    entrypoint: [ '/bin/sh', '-c' ]
+    command: |
+      "
+      # blocks until kafka is reachable
+      kafka-topics --bootstrap-server kafka:9091 --list
+      echo -e 'Creating kafka topics'
+      kafka-topics --bootstrap-server kafka:9091 --create --if-not-exists --topic messages.updates --replication-factor 1 --partitions 2
+      echo -e 'Creating kafka DLQ-topics'
+      kafka-topics --bootstrap-server kafka:9091 --create --if-not-exists --topic messages.updates_dlq --replication-factor 1 --partitions 2
+      "
 
 volumes:
   postgresql: { }

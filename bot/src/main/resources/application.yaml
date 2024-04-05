@@ -31,7 +31,7 @@ kafka:
   concurrency: 1
   dlq:
     topic: messages.updates_dlq
-    replication-factor: 2
+    replication-factor: 1
     partitions: 2
     acks-mode: all
     delivery-timeout: 60_000
