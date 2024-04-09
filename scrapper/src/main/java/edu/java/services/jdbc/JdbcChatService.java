@@ -3,8 +3,11 @@ package edu.java.services.jdbc;
 import edu.java.repository.ChatRepository;
 import edu.java.services.ChatService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 
-@RequiredArgsConstructor public class JdbcChatService implements ChatService {
+@Service
+@RequiredArgsConstructor
+public class JdbcChatService implements ChatService {
 
     private final ChatRepository chatRepository;
 
