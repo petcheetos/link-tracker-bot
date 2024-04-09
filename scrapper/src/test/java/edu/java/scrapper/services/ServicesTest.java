@@ -31,7 +31,6 @@ public class ServicesTest extends IntegrationTest {
         assertDoesNotThrow(() -> chatService.deleteChat(10L));
     }
 
-
     @Test
     @Transactional
     @Rollback
