@@ -32,7 +32,7 @@ public class BotClient {
     }
 
     public String sendUpdate(LinkUpdateRequest request) {
-        return webClient
+        return retry.executeSupplier(() -> webClient
             .post()
             .uri("/updates")
             .body(BodyInserters.fromValue(request))
@@ -41,10 +41,6 @@ public class BotClient {
                 .bodyToMono(ApiErrorResponse.class)
                 .flatMap(apiErrorResponse -> Mono.error(new ApiErrorException(apiErrorResponse))))
             .bodyToMono(String.class)
-            .block();
-    }
-
-    public String retrySendUpdate(LinkUpdateRequest request) {
-        return Retry.decorateSupplier(retry, () -> sendUpdate(request)).get();
+            .block());
     }
 }

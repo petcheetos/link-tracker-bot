@@ -29,7 +29,7 @@ public class StackoverflowClient {
     }
 
     public StackoverflowResponse getUpdate(String id) {
-        return webClient
+        return retry.executeSupplier(() -> webClient
             .get()
             .uri(uriBuilder -> uriBuilder
                 .path(id + "/")
@@ -40,10 +40,6 @@ public class StackoverflowClient {
                 .build())
             .retrieve()
             .bodyToMono(StackoverflowResponse.class)
-            .block();
-    }
-
-    public StackoverflowResponse retryGetUpdate(String id) {
-        return Retry.decorateSupplier(retry, () -> getUpdate(id)).get();
+            .block());
     }
 }

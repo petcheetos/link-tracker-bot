@@ -40,7 +40,7 @@ public class ScrapperClient {
     }
 
     public String registerChat(long id) {
-        return webClient
+        return retry.executeSupplier(() -> webClient
             .post()
             .uri(uriBuilder -> uriBuilder.path("tg-chat/{id}").build(id))
             .retrieve()
@@ -48,11 +48,11 @@ public class ScrapperClient {
                 .bodyToMono(ApiErrorResponse.class)
                 .flatMap(apiErrorResponse -> Mono.error(new ApiErrorException(apiErrorResponse))))
             .bodyToMono(String.class)
-            .block();
+            .block());
     }
 
     public String deleteChat(long id) {
-        return webClient
+        return retry.executeSupplier(() -> webClient
             .delete()
             .uri(uriBuilder -> uriBuilder.path("/tg-chat/{id}").build(id))
             .retrieve()
@@ -63,11 +63,11 @@ public class ScrapperClient {
                     .flatMap(apiErrorResponse -> Mono.error(new ApiErrorException(apiErrorResponse)))
             )
             .bodyToMono(String.class)
-            .block();
+            .block());
     }
 
     public ListLinkResponse getLinks(long id) {
-        return webClient
+        return retry.executeSupplier(() -> webClient
             .get()
             .uri(LINKS)
             .header(TG_CHAT_ID, String.valueOf(id))
@@ -79,12 +79,11 @@ public class ScrapperClient {
                     .flatMap(apiErrorResponse -> Mono.error(new ApiErrorException(apiErrorResponse)))
             )
             .bodyToMono(ListLinkResponse.class)
-            .block();
+            .block());
     }
 
     public LinkResponse addLink(long id, AddLinkRequest addLinkRequest) {
-        return webClient
-            .post()
+        return retry.executeSupplier(() -> webClient.post()
             .uri(LINKS)
             .header(TG_CHAT_ID, String.valueOf(id))
             .body(BodyInserters.fromValue(addLinkRequest))
@@ -96,11 +95,11 @@ public class ScrapperClient {
                     .flatMap(apiErrorResponse -> Mono.error(new ApiErrorException(apiErrorResponse)))
             )
             .bodyToMono(LinkResponse.class)
-            .block();
+            .block());
     }
 
     public LinkResponse deleteLink(long id, RemoveLinkRequest removeLinkRequest) {
-        return webClient
+        return retry.executeSupplier(() -> webClient
             .method(HttpMethod.DELETE)
             .uri(LINKS)
             .header(TG_CHAT_ID, String.valueOf(id))
@@ -113,26 +112,6 @@ public class ScrapperClient {
                     .flatMap(apiErrorResponse -> Mono.error(new ApiErrorException(apiErrorResponse)))
             )
             .bodyToMono(LinkResponse.class)
-            .block();
-    }
-
-    public String retryRegisterChat(long id) {
-        return Retry.decorateSupplier(retry, () -> registerChat(id)).get();
-    }
-
-    public String retryDeleteChat(long id) {
-        return Retry.decorateSupplier(retry, () -> deleteChat(id)).get();
-    }
-
-    public ListLinkResponse retryGetLinks(long id) {
-        return Retry.decorateSupplier(retry, () -> getLinks(id)).get();
-    }
-
-    public LinkResponse retryAddLink(long id, AddLinkRequest addLinkRequest) {
-        return Retry.decorateSupplier(retry, () -> addLink(id, addLinkRequest)).get();
-    }
-
-    public LinkResponse retryDeleteLink(long id, RemoveLinkRequest removeLinkRequest) {
-        return Retry.decorateSupplier(retry, () -> deleteLink(id, removeLinkRequest)).get();
+            .block());
     }
 }

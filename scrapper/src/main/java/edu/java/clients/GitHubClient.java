@@ -29,14 +29,11 @@ public class GitHubClient {
     }
 
     public GitHubResponse getRepositoryInfo(String owner, String repo) {
-        return webClient.get()
+        return retry.executeSupplier(() -> webClient
+            .get()
             .uri(owner + "/" + repo)
             .retrieve()
             .bodyToMono(GitHubResponse.class)
-            .block();
-    }
-
-    public GitHubResponse retryGetRepositoryInfo(String owner, String repo) {
-        return Retry.decorateSupplier(retry, () -> getRepositoryInfo(owner, repo)).get();
+            .block());
     }
 }

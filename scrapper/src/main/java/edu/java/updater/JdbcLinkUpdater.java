@@ -37,7 +37,7 @@ public class JdbcLinkUpdater implements LinkUpdater {
 
     private void processGithubUpdate(LinkDTO linkDTO) {
         List<String> info = linkProcessor.getUserRepoName(linkDTO.url());
-        GitHubResponse response = gitHubClient.retryGetRepositoryInfo(info.getFirst(), info.getLast());
+        GitHubResponse response = gitHubClient.getRepositoryInfo(info.getFirst(), info.getLast());
         if (response.updatedAt().isAfter(linkDTO.lastUpdated())
             || response.pushedAt().isAfter(linkDTO.lastUpdated())) {
             pushUpdate(linkDTO);
@@ -48,7 +48,7 @@ public class JdbcLinkUpdater implements LinkUpdater {
 
     private void processStackoverflowUpdate(LinkDTO linkDTO) {
         String idStr = linkProcessor.getQuestionId(linkDTO.url());
-        StackoverflowResponse response = stackoverflowClient.retryGetUpdate(idStr);
+        StackoverflowResponse response = stackoverflowClient.getUpdate(idStr);
         List<StackoverflowResponse.ItemResponse> itemResponses = response.items();
         for (var item : itemResponses) {
             OffsetDateTime time = item.lastActivityDate();
@@ -62,7 +62,7 @@ public class JdbcLinkUpdater implements LinkUpdater {
 
     private void pushUpdate(LinkDTO linkDTO) {
         linkRepository.updateLink(linkDTO);
-        botClient.retrySendUpdate(new LinkUpdateRequest(linkDTO.id(), linkDTO.url(),
+        botClient.sendUpdate(new LinkUpdateRequest(linkDTO.id(), linkDTO.url(),
             "\uD83C\uDF3A New update by link: ", linkRepository.getChatIdsForLink(linkDTO.id())
         ));
     }

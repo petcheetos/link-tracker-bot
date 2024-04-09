@@ -14,18 +14,18 @@ public class ClientService {
     private final ScrapperClient scrapperClient;
 
     public void registerChat(Long chatId) {
-        scrapperClient.retryRegisterChat(chatId);
+        scrapperClient.registerChat(chatId);
     }
 
     public ListLinkResponse getLinks(Long chatId) {
-        return scrapperClient.retryGetLinks(chatId);
+        return scrapperClient.getLinks(chatId);
     }
 
     public LinkResponse addLink(Long chatId, AddLinkRequest addLinkRequest) {
-        return scrapperClient.retryAddLink(chatId, addLinkRequest);
+        return scrapperClient.addLink(chatId, addLinkRequest);
     }
 
     public LinkResponse removeLink(Long chatId, RemoveLinkRequest removeLinkRequest) {
-        return scrapperClient.retryDeleteLink(chatId, removeLinkRequest);
+        return scrapperClient.deleteLink(chatId, removeLinkRequest);
     }
 }
