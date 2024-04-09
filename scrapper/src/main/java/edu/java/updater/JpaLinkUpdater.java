@@ -39,7 +39,7 @@ public class JpaLinkUpdater implements LinkUpdater {
 
     private void processGithubUpdate(Link link) {
         List<String> info = linkProcessor.getUserRepoName(URI.create(link.getUrl()));
-        GitHubResponse response = gitHubClient.getRepositoryInfo(info.getFirst(), info.getLast());
+        GitHubResponse response = gitHubClient.retryGetRepositoryInfo(info.getFirst(), info.getLast());
         if (response.updatedAt().isAfter(link.getLastUpdated())
             || response.pushedAt().isAfter(link.getLastUpdated())) {
             pushUpdate(link);
@@ -49,7 +49,7 @@ public class JpaLinkUpdater implements LinkUpdater {
 
     private void processStackoverflowUpdate(Link link) {
         String idStr = linkProcessor.getQuestionId(URI.create(link.getUrl()));
-        StackoverflowResponse response = stackoverflowClient.getUpdate(idStr);
+        StackoverflowResponse response = stackoverflowClient.retryGetUpdate(idStr);
         List<StackoverflowResponse.ItemResponse> itemResponses = response.items();
         for (var item : itemResponses) {
             OffsetDateTime time = item.lastActivityDate();
@@ -62,7 +62,7 @@ public class JpaLinkUpdater implements LinkUpdater {
 
     private void pushUpdate(Link link) {
         linkRepository.updateLastUpdatedAt(link.getUrl(), OffsetDateTime.now());
-        botClient.sendUpdate(new LinkUpdateRequest(link.getId(), URI.create(link.getUrl()),
+        botClient.retrySendUpdate(new LinkUpdateRequest(link.getId(), URI.create(link.getUrl()),
                 "\uD83C\uDF3A New update by link: ", linkRepository.findChatIdsByLink(link)
             )
         );
