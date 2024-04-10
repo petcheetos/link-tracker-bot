@@ -16,25 +16,23 @@ public class JdbcChatRepository implements ChatRepository {
     private final JdbcTemplate jdbcTemplate;
 
     @Override
-    @Transactional
     public void add(Long chatId) {
         jdbcTemplate.update("insert into chat (id) values (?)", chatId);
     }
 
     @Override
-    @Transactional
     public void remove(Long chatId) {
         jdbcTemplate.update("delete from chat where id = (?)", chatId);
     }
 
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public List<ChatDTO> findAll() {
         return jdbcTemplate.query("select id from chat", new ChatMapper());
     }
 
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public boolean exist(Long chatId) {
         Integer count = jdbcTemplate.queryForObject("select count(*) from chat where id = ?", Integer.class, chatId);
         return count != null && count > 0;
