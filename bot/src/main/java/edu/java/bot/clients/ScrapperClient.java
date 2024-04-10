@@ -1,6 +1,5 @@
 package edu.java.bot.clients;
 
-import edu.java.bot.configuration.retry.RetryPolicyConfig;
 import edu.java.bot.exceptions.ApiErrorException;
 import edu.java.models.AddLinkRequest;
 import edu.java.models.ApiErrorResponse;
@@ -8,9 +7,7 @@ import edu.java.models.LinkResponse;
 import edu.java.models.ListLinkResponse;
 import edu.java.models.RemoveLinkRequest;
 import io.github.resilience4j.retry.Retry;
-import jakarta.annotation.PostConstruct;
 import java.util.Objects;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.web.reactive.function.BodyInserters;
@@ -23,20 +20,13 @@ public class ScrapperClient {
     private static final String BASE_URL = "http://localhost:8080";
     private final WebClient webClient;
 
-    @Autowired
-    private RetryPolicyConfig retryPolicyConfig;
+    private final Retry retry;
 
-    private Retry retry;
-
-    public ScrapperClient(WebClient.Builder builder, String baseUrl) {
+    public ScrapperClient(WebClient.Builder builder, String baseUrl, Retry retry) {
         this.webClient = builder
             .baseUrl(Objects.requireNonNullElse(baseUrl, BASE_URL))
             .build();
-    }
-
-    @PostConstruct
-    private void initRetry() {
-        retry = retryPolicyConfig.configure();
+        this.retry = retry;
     }
 
     public String registerChat(long id) {

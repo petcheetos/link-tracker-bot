@@ -1,13 +1,10 @@
 package edu.java.clients;
 
-import edu.java.configuration.retry.RetryPolicyConfig;
 import edu.java.exception.ApiErrorException;
 import edu.java.models.ApiErrorResponse;
 import edu.java.models.LinkUpdateRequest;
 import io.github.resilience4j.retry.Retry;
-import jakarta.annotation.PostConstruct;
 import java.util.Objects;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -17,18 +14,11 @@ public class BotClient {
     private final static String BASE_URL = "http://localhost:8090";
     private final WebClient webClient;
 
-    @Autowired
-    private RetryPolicyConfig retryPolicyConfig;
+    private final Retry retry;
 
-    private Retry retry;
-
-    public BotClient(WebClient.Builder builder, String baseUrl) {
+    public BotClient(WebClient.Builder builder, String baseUrl, Retry retry) {
         this.webClient = builder.baseUrl(Objects.requireNonNullElse(baseUrl, BASE_URL)).build();
-    }
-
-    @PostConstruct
-    private void initRetry() {
-        retry = retryPolicyConfig.configure();
+        this.retry = retry;
     }
 
     public String sendUpdate(LinkUpdateRequest request) {
