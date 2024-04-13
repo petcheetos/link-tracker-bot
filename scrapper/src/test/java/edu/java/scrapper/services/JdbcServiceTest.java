@@ -2,26 +2,27 @@ package edu.java.scrapper.services;
 
 import edu.java.exception.RequestException;
 import edu.java.scrapper.IntegrationTest;
-import edu.java.services.ChatService;
-import edu.java.services.LinkService;
+import edu.java.services.jdbc.JdbcChatService;
+import edu.java.services.jdbc.JdbcLinkService;
 import java.net.URI;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.Rollback;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.transaction.annotation.Transactional;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest
-public class ServicesTest extends IntegrationTest {
+@TestPropertySource(properties = "app.database-access-type=jdbc")
+public class JdbcServiceTest extends IntegrationTest {
 
     @Autowired
-    private ChatService chatService;
+    private JdbcChatService chatService;
 
     @Autowired
-    private LinkService linkService;
-
+    private JdbcLinkService linkService;
 
     @Test
     @Transactional
@@ -30,7 +31,6 @@ public class ServicesTest extends IntegrationTest {
         chatService.registerChat(10L);
         assertDoesNotThrow(() -> chatService.deleteChat(10L));
     }
-
 
     @Test
     @Transactional
