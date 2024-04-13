@@ -32,6 +32,20 @@ spring:
     password: postgres
     url: jdbc:postgresql://localhost:5432/scrapper
 
+management:
+  server:
+    port: 8081
+  metrics:
+    tags:
+      application: ${spring.application.name}
+  endpoints:
+    web:
+      base-path: /
+      exposure:
+        include: "info,health,prometheus"
+      path-mapping:
+        prometheus: "metrics"
+
 kafka:
   topic: "messages.updates"
   bootstrap-servers: localhost:29091

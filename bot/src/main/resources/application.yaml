@@ -23,6 +23,21 @@ api:
     http-statuses: INTERNAL_SERVER_ERROR, BAD_GATEWAY, SERVICE_UNAVAILABLE, GATEWAY_TIMEOUT
     interval: 5000
 
+management:
+  server:
+    port: 8091
+  metrics:
+    tags:
+      application: ${spring.application.name}
+  endpoints:
+    web:
+      base-path: /
+      exposure:
+        include: "info,health,prometheus"
+      path-mapping:
+        prometheus: "metrics"
+
+
 kafka:
   group-id: messages-group
   bootstrap-servers: localhost:29091
@@ -30,6 +45,7 @@ kafka:
   max-poll-interval-ms: 300_000
   enable-auto-commit: false
   concurrency: 1
+  replication-factor: 1
   dlq:
     topic: messages.updates_dlq
     replication-factor: 1

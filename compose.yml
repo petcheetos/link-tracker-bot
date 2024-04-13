@@ -69,9 +69,27 @@ services:
       kafka-topics --bootstrap-server kafka:9091 --create --if-not-exists --topic messages.updates_dlq --replication-factor 1 --partitions 2
       "
 
+  prometheus:
+    image: prom/prometheus:latest
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus:/etc/prometheus/
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+
+  grafana:
+    image: grafana/grafana-oss:latest
+    container_name: grafana
+    ports:
+      - '3000:3000'
+    volumes:
+      - grafana_data:/var/lib/grafana
+
 volumes:
   postgresql: { }
   zookeeper_data: { }
+  grafana_data: { }
 
 networks:
   backend: { }

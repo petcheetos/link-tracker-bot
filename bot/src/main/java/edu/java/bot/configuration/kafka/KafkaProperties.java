@@ -11,6 +11,7 @@ public record KafkaProperties(
     @Value("max-poll-interval-ms") Integer maxPollIntervalMs,
     @Value("enable-auto-commit") Boolean enableAutoCommit,
     @Value("concurrency") Integer concurrency,
+    @Value("replication-factor") Integer replicationFactor,
     @Value("dlq") DLQProperties dlq
 ) {
     public record DLQProperties(
