@@ -7,9 +7,9 @@ import com.pengrad.telegrambot.request.SendMessage;
 import edu.java.bot.exceptions.ApiErrorException;
 import edu.java.bot.services.ClientService;
 import edu.java.bot.services.CommandService;
-import java.util.List;
 import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.MeterRegistry;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -22,7 +22,12 @@ public class MessageHandler implements UpdatesListener {
     private final Counter messageCounter;
 
     @Autowired
-    public MessageHandler(TelegramBot telegramBot, CommandService commandService, ClientService clientService, MeterRegistry meterRegistry) {
+    public MessageHandler(
+        TelegramBot telegramBot,
+        CommandService commandService,
+        ClientService clientService,
+        MeterRegistry meterRegistry
+    ) {
         this.telegramBot = telegramBot;
         this.commandService = commandService;
         this.clientService = clientService;

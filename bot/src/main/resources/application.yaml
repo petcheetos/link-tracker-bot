@@ -37,7 +37,6 @@ management:
       path-mapping:
         prometheus: "metrics"
 
-
 kafka:
   group-id: messages-group
   bootstrap-servers: localhost:29091
