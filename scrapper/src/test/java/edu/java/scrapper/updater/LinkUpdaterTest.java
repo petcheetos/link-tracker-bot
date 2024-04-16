@@ -7,7 +7,7 @@ import edu.java.dto.GitHubResponse;
 import edu.java.dto.StackoverflowResponse;
 import edu.java.dto.entity.Link;
 import edu.java.repository.jpa.JpaLinkRepository;
-import edu.java.updater.JpaLinkUpdater;
+import edu.java.updater.LinkUpdater;
 import edu.java.utils.LinkProcessor;
 import java.net.URI;
 import java.time.OffsetDateTime;
@@ -19,22 +19,20 @@ import org.junit.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-public class JpaLinkUpdaterTest {
+public class LinkUpdaterTest {
 
     @Mock private JpaLinkRepository linkRepository;
     @Mock private BotClient botClient;
     @Mock private LinkProcessor linkProcessor;
     @Mock private GitHubClient gitHubClient;
     @Mock private StackoverflowClient stackoverflowClient;
-    @InjectMocks private JpaLinkUpdater jpaLinkUpdater;
+    @InjectMocks private LinkUpdater jpaLinkUpdater;
 
     @Before
     public void setup() {
@@ -66,7 +64,7 @@ public class JpaLinkUpdaterTest {
         when(gitHubResponse.updatedAt()).thenReturn(OffsetDateTime.now());
         when(gitHubResponse.pushedAt()).thenReturn(OffsetDateTime.now());
         jpaLinkUpdater.update();
-        verify(linkRepository).updateCheckedAt(anyString(), any());
+        verify(linkRepository).updateCheckedAt(link);
         verify(botClient).sendUpdate(any());
     }
 
@@ -89,7 +87,6 @@ public class JpaLinkUpdaterTest {
         when(response.items()).thenReturn(List.of(itemResponse));
         when(stackoverflowClient.getUpdate("123")).thenReturn(response);
         jpaLinkUpdater.update();
-        verify(linkRepository).updateCheckedAt(eq(link.getUrl()), any(OffsetDateTime.class));
         verify(botClient).sendUpdate(any());
     }
 }
