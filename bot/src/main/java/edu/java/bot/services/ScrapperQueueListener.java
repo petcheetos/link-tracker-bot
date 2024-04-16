@@ -49,7 +49,7 @@ public class ScrapperQueueListener {
         return violations.isEmpty();
     }
 
-    private void sendDQL(LinkUpdateRequest updateRequest) {
+    public void sendDQL(LinkUpdateRequest updateRequest) {
         try {
             LOGGER.info("Sending to DQL ", updateRequest);
             kafkaTemplate.send(kafkaProperties.dlq().topic(), objectMapper.writeValueAsBytes(updateRequest));
