@@ -18,7 +18,7 @@ public class JdbcLinkService implements LinkService {
     private final LinkProcessor linkValidator;
 
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public List<LinkResponse> getLinks(long chatId) {
         checkChatDoesNotExist(chatId);
         return linkRepository.findAllByChat(chatId);
