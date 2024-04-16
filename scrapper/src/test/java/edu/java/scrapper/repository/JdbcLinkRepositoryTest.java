@@ -1,9 +1,8 @@
 package edu.java.scrapper.repository;
 
-import edu.java.dto.LinkDTO;
 import edu.java.models.LinkResponse;
 import edu.java.repository.ChatRepository;
-import edu.java.repository.LinkRepository;
+import edu.java.repository.jdbc.JdbcLinkRepository;
 import edu.java.scrapper.IntegrationTest;
 import java.net.URI;
 import java.time.OffsetDateTime;
@@ -23,7 +22,7 @@ public class JdbcLinkRepositoryTest extends IntegrationTest {
     @Autowired
     private JdbcTemplate jdbcTemplate;
     @Autowired
-    private LinkRepository linkRepository;
+    private JdbcLinkRepository linkRepository;
     @Autowired
     private ChatRepository chatRepository;
 
@@ -66,7 +65,7 @@ public class JdbcLinkRepositoryTest extends IntegrationTest {
     public void testUpdateLink() {
         String url = "github.com";
         Long linkId = jdbcTemplate.queryForObject("insert into link (url) values (?) returning id", Long.class, url);
-        linkRepository.updateLink(new LinkDTO(linkId, URI.create(url), OffsetDateTime.now()));
+        linkRepository.updateLastUpdatedAt(url, OffsetDateTime.now());
         assertThat(jdbcTemplate.queryForObject("select url from link where id = (?)", String.class, linkId)).isEqualTo(
             url);
     }

@@ -4,12 +4,12 @@ import edu.java.clients.GitHubClient;
 import edu.java.clients.StackoverflowClient;
 import edu.java.repository.jpa.JpaChatRepository;
 import edu.java.repository.jpa.JpaLinkRepository;
+import edu.java.repository.jpa.JpaLinkRepositoryInterface;
 import edu.java.services.ChatService;
 import edu.java.services.LinkService;
 import edu.java.services.Sender;
 import edu.java.services.jpa.JpaChatService;
 import edu.java.services.jpa.JpaLinkService;
-import edu.java.updater.JpaLinkUpdater;
 import edu.java.updater.LinkUpdater;
 import edu.java.utils.LinkProcessor;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -23,7 +23,7 @@ public class JpaAccessConfiguration {
     @Bean
     public LinkService linkService(
         LinkProcessor linkValidator,
-        JpaLinkRepository linkRepository,
+        JpaLinkRepositoryInterface linkRepository,
         JpaChatRepository chatRepository
     ) {
         return new JpaLinkService(
@@ -46,7 +46,7 @@ public class JpaAccessConfiguration {
         GitHubClient gitHubClient,
         StackoverflowClient stackoverflowClient
     ) {
-        return new JpaLinkUpdater(
+        return new LinkUpdater(
             linkRepository,
             sender,
             linkProcessor,

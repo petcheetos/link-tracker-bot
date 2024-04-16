@@ -6,7 +6,7 @@ import edu.java.exception.RequestException;
 import edu.java.models.LinkResponse;
 import edu.java.models.ListLinkResponse;
 import edu.java.repository.jpa.JpaChatRepository;
-import edu.java.repository.jpa.JpaLinkRepository;
+import edu.java.repository.jpa.JpaLinkRepositoryInterface;
 import edu.java.services.LinkService;
 import edu.java.utils.LinkProcessor;
 import java.net.URI;
@@ -17,7 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class JpaLinkService implements LinkService {
     private final LinkProcessor linkValidator;
-    private final JpaLinkRepository linkRepository;
+    private final JpaLinkRepositoryInterface linkRepository;
     private final JpaChatRepository chatRepository;
 
     @Override
