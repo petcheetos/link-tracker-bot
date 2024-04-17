@@ -6,7 +6,7 @@ import java.util.Map;
 
 public interface CommandService {
 
-    String createResponse(Update update);
+    String createResponse(Update update, ClientService clientService);
 
     Map<String, Command> getCommandMap();
 }

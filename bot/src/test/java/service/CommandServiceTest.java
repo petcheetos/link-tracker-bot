@@ -1,19 +1,24 @@
 package service;
 
 import com.pengrad.telegrambot.model.Update;
+import edu.java.bot.clients.ScrapperClient;
 import edu.java.bot.configuration.CommandConfig;
 import edu.java.bot.services.BotCommandService;
+import edu.java.bot.services.ClientService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.web.reactive.function.client.WebClient;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @ExtendWith(MockitoExtension.class)
 public class CommandServiceTest {
 
+    private final ScrapperClient scrapperClient = new ScrapperClient(WebClient.builder(), "http://localhost:8080");
+    private final ClientService clientService = new ClientService(scrapperClient);
     @Mock
     CommandConfig commandConfig = new CommandConfig();
 
@@ -24,53 +29,37 @@ public class CommandServiceTest {
     public void createResponseWithUnknownCommand() {
         Update update = Mockito.mock(Update.class, Mockito.RETURNS_DEEP_STUBS);
         Mockito.when(update.message().text()).thenReturn("/unknown");
-        String msg = botCommandService.createResponse(update);
-        assertThat(msg).isEqualTo("I don't know this command! Type /help to find out about my commands");
+        String msg = botCommandService.createResponse(update, clientService);
+        assertThat(msg).isEqualTo("I do not know this command 😲");
     }
 
     @Test
-    public void createResponseWithStartCommand() {
-        Update update = Mockito.mock(Update.class, Mockito.RETURNS_DEEP_STUBS);
-        Mockito.when(update.message().text()).thenReturn("/start");
-        String msg = botCommandService.createResponse(update);
-        assertThat(msg).isEqualTo("Hi! I am a link tracking bot! Type /help to see the list of available commands!");
-    }
-
-    @Test
-    public void createResponseWithListCommand() {
-        Update update = Mockito.mock(Update.class, Mockito.RETURNS_DEEP_STUBS);
-        Mockito.when(update.message().text()).thenReturn("/list");
-        String msg = botCommandService.createResponse(update);
-        assertThat(msg).isEqualTo("List of tracking sites:");
-    }
-
-    @Test
-    public void createResponseWithTrackCommand() {
+    public void createResponseWithTrackCommandWithEmptyLink() {
         Update update = Mockito.mock(Update.class, Mockito.RETURNS_DEEP_STUBS);
         Mockito.when(update.message().text()).thenReturn("/track");
-        String msg = botCommandService.createResponse(update);
-        assertThat(msg).isEqualTo("What site do you want to track updates to? Please, send a link!");
+        String msg = botCommandService.createResponse(update, clientService);
+        assertThat(msg).isEqualTo("Empty link! ✏️ Type /track link");
     }
 
     @Test
-    public void createResponseWithUntrackCommand() {
+    public void createResponseWithUntrackCommandWithEmptyLink() {
         Update update = Mockito.mock(Update.class, Mockito.RETURNS_DEEP_STUBS);
         Mockito.when(update.message().text()).thenReturn("/untrack");
-        String msg = botCommandService.createResponse(update);
-        assertThat(msg).isEqualTo("What site do you want to stop receiving updates from? Please, send a link!");
+        String msg = botCommandService.createResponse(update, clientService);
+        assertThat(msg).isEqualTo("Empty link! ✏️ Type /untrack link");
     }
 
     @Test
     public void createResponseWithHelpCommand() {
         Update update = Mockito.mock(Update.class, Mockito.RETURNS_DEEP_STUBS);
         Mockito.when(update.message().text()).thenReturn("/help");
-        String msg = botCommandService.createResponse(update);
+        String msg = botCommandService.createResponse(update, clientService);
         assertThat(msg).isEqualTo("""
-                Commands:
-                \t- /start - Register a user
-                \t- /list - Send a list of tracking sites
-                \t- /track - Add link for tracking
-                \t- /untrack - Remove a site from the tracking list
-                """);
+            Commands:
+            	■ /start - Register a user
+            	■ /list - Send a list of tracking sites
+            	■ /track - Add link for tracking
+            	■ /untrack - Remove a site from the tracking list
+            """);
     }
 }

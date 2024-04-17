@@ -1,4 +1,4 @@
-package edu.java.repository.mappers;
+package edu.java.utils.mappers;
 
 import edu.java.dto.ChatDTO;
 import java.sql.ResultSet;

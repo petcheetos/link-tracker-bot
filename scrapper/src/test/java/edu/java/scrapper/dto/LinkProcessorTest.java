@@ -1,6 +1,6 @@
 package edu.java.scrapper.dto;
 
-import edu.java.dto.LinkProcessor;
+import edu.java.utils.LinkProcessor;
 import java.net.URI;
 import java.util.List;
 import org.junit.Test;

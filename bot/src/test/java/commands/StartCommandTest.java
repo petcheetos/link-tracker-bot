@@ -17,6 +17,4 @@ public class StartCommandTest {
     void testStartDescription() {
         assertThat(start.description()).isNotBlank();
     }
-
-    //void testExecute()
 }

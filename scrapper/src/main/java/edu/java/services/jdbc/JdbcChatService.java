@@ -6,7 +6,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 @Service
-@RequiredArgsConstructor public class JdbcChatService implements ChatService {
+@RequiredArgsConstructor
+public class JdbcChatService implements ChatService {
 
     private final ChatRepository chatRepository;
 

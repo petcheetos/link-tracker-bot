@@ -2,8 +2,8 @@ package edu.java.scrapper.services;
 
 import edu.java.exception.RequestException;
 import edu.java.scrapper.IntegrationTest;
-import edu.java.services.jdbc.JdbcChatService;
-import edu.java.services.jdbc.JdbcLinkService;
+import edu.java.services.jpa.JpaChatService;
+import edu.java.services.jpa.JpaLinkService;
 import java.net.URI;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,14 +15,14 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest
-@TestPropertySource(properties = "app.database-access-type=jdbc")
-public class JdbcServiceTest extends IntegrationTest {
+@TestPropertySource(properties = "app.database-access-type=jpa")
+public class JpaServiceTest extends IntegrationTest {
 
     @Autowired
-    private JdbcChatService chatService;
+    private JpaChatService chatService;
 
     @Autowired
-    private JdbcLinkService linkService;
+    private JpaLinkService linkService;
 
     @Test
     @Transactional

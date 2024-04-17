@@ -1,4 +1,4 @@
-package edu.java.repository.mappers;
+package edu.java.utils.mappers;
 
 import edu.java.models.LinkResponse;
 import java.net.URI;

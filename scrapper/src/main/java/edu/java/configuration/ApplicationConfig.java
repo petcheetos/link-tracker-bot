@@ -19,7 +19,9 @@ public record ApplicationConfig(
     @NotNull
     StackoverflowBaseUrl stackoverflowBaseUrl,
     @NotNull
-    BotBaseUrl botBaseUrl
+    BotBaseUrl botBaseUrl,
+    @NotNull
+    AccessType databaseAccessType
 ) {
     public record Scheduler(boolean enable, @NotNull Duration interval, @NotNull Duration forceCheckDelay) {
     }
@@ -31,5 +33,9 @@ public record ApplicationConfig(
     }
 
     public record BotBaseUrl(@NotNull String baseUrl) {
+    }
+
+    public enum AccessType {
+        JDBC, JPA
     }
 }
