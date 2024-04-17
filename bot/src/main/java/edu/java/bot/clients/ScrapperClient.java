@@ -6,6 +6,7 @@ import edu.java.models.ApiErrorResponse;
 import edu.java.models.LinkResponse;
 import edu.java.models.ListLinkResponse;
 import edu.java.models.RemoveLinkRequest;
+import io.github.resilience4j.retry.Retry;
 import java.util.Objects;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatusCode;
@@ -19,14 +20,17 @@ public class ScrapperClient {
     private static final String BASE_URL = "http://localhost:8080";
     private final WebClient webClient;
 
-    public ScrapperClient(WebClient.Builder builder, String baseUrl) {
+    private final Retry retry;
+
+    public ScrapperClient(WebClient.Builder builder, String baseUrl, Retry retry) {
         this.webClient = builder
             .baseUrl(Objects.requireNonNullElse(baseUrl, BASE_URL))
             .build();
+        this.retry = retry;
     }
 
     public String registerChat(long id) {
-        return webClient
+        return retry.executeSupplier(() -> webClient
             .post()
             .uri(uriBuilder -> uriBuilder.path("tg-chat/{id}").build(id))
             .retrieve()
@@ -34,11 +38,11 @@ public class ScrapperClient {
                 .bodyToMono(ApiErrorResponse.class)
                 .flatMap(apiErrorResponse -> Mono.error(new ApiErrorException(apiErrorResponse))))
             .bodyToMono(String.class)
-            .block();
+            .block());
     }
 
     public String deleteChat(long id) {
-        return webClient
+        return retry.executeSupplier(() -> webClient
             .delete()
             .uri(uriBuilder -> uriBuilder.path("/tg-chat/{id}").build(id))
             .retrieve()
@@ -49,11 +53,11 @@ public class ScrapperClient {
                     .flatMap(apiErrorResponse -> Mono.error(new ApiErrorException(apiErrorResponse)))
             )
             .bodyToMono(String.class)
-            .block();
+            .block());
     }
 
     public ListLinkResponse getLinks(long id) {
-        return webClient
+        return retry.executeSupplier(() -> webClient
             .get()
             .uri(LINKS)
             .header(TG_CHAT_ID, String.valueOf(id))
@@ -65,12 +69,11 @@ public class ScrapperClient {
                     .flatMap(apiErrorResponse -> Mono.error(new ApiErrorException(apiErrorResponse)))
             )
             .bodyToMono(ListLinkResponse.class)
-            .block();
+            .block());
     }
 
     public LinkResponse addLink(long id, AddLinkRequest addLinkRequest) {
-        return webClient
-            .post()
+        return retry.executeSupplier(() -> webClient.post()
             .uri(LINKS)
             .header(TG_CHAT_ID, String.valueOf(id))
             .body(BodyInserters.fromValue(addLinkRequest))
@@ -82,11 +85,11 @@ public class ScrapperClient {
                     .flatMap(apiErrorResponse -> Mono.error(new ApiErrorException(apiErrorResponse)))
             )
             .bodyToMono(LinkResponse.class)
-            .block();
+            .block());
     }
 
     public LinkResponse deleteLink(long id, RemoveLinkRequest removeLinkRequest) {
-        return webClient
+        return retry.executeSupplier(() -> webClient
             .method(HttpMethod.DELETE)
             .uri(LINKS)
             .header(TG_CHAT_ID, String.valueOf(id))
@@ -99,6 +102,6 @@ public class ScrapperClient {
                     .flatMap(apiErrorResponse -> Mono.error(new ApiErrorException(apiErrorResponse)))
             )
             .bodyToMono(LinkResponse.class)
-            .block();
+            .block());
     }
 }

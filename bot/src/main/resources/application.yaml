@@ -16,9 +16,15 @@ logging:
   config: classpath:log4j2-plain.xml
 
 api:
-  scrapper-base-url:
-    base-url: http://localhost:8080
+  scrapper:
+    retry-policy: constant
+    attempts: 3
+    http-statuses: INTERNAL_SERVER_ERROR, BAD_GATEWAY, SERVICE_UNAVAILABLE, GATEWAY_TIMEOUT
+    interval: 5000
 
 springdoc:
   swagger-ui:
     path: /swagger-ui
+
+bucket:
+  count: 10
