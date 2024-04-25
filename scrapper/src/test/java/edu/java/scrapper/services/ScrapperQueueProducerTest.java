@@ -32,15 +32,17 @@ import static org.assertj.core.api.Assertions.assertThat;
 class ScrapperQueueProducerTest {
 
     @Test
-    void sendUpdate(EmbeddedKafkaBroker broker) throws InterruptedException {
+    void testSendUpdate(EmbeddedKafkaBroker broker) throws InterruptedException {
         Map<String, Object> consumerProps = KafkaTestUtils.consumerProps("test", "true", broker);
         consumerProps.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
         consumerProps.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, JsonDeserializer.class);
         consumerProps.put(JsonDeserializer.TRUSTED_PACKAGES, "*");
-        DefaultKafkaConsumerFactory<String, LinkUpdateRequest> cf = new DefaultKafkaConsumerFactory<>(consumerProps);
+
+        DefaultKafkaConsumerFactory<String, LinkUpdateRequest> consumerFactory =
+            new DefaultKafkaConsumerFactory<>(consumerProps);
         ContainerProperties containerProperties = new ContainerProperties("messages.updates");
         KafkaMessageListenerContainer<String, LinkUpdateRequest> container =
-            new KafkaMessageListenerContainer<>(cf, containerProperties);
+            new KafkaMessageListenerContainer<>(consumerFactory, containerProperties);
         final BlockingQueue<ConsumerRecord<String, LinkUpdateRequest>> records = new LinkedBlockingQueue<>();
         container.setupMessageListener((MessageListener<String, LinkUpdateRequest>) records::add);
         container.setBeanName("test");
