@@ -2,12 +2,32 @@ app:
   telegram-token: ${TELEGRAM_TOKEN}
   scrapper-base-url:
     base-url: "http://localhost:8080"
+  scrapper-topic-name: "messages.updates"
 
 spring:
   application:
     name: bot
   jackson:
     time-zone: UTC
+  kafka:
+    consumer:
+      group-id: "scrapper-group"
+      auto-offset-reset: latest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        spring.json.trusted.packages: "*"
+    bootstrap-servers: localhost:29091,localhost:29092,localhost:29093
+    template:
+      default-topic: messages.updates
+    streams:
+      replication-factor: 2
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      acks: all
+      batch-size: 20
+      client-id: "bot-producer"
 
 server:
   port: 8090
@@ -16,9 +36,15 @@ logging:
   config: classpath:log4j2-plain.xml
 
 api:
-  scrapper-base-url:
-    base-url: http://localhost:8080
+  scrapper:
+    retry-policy: constant
+    attempts: 3
+    http-statuses: INTERNAL_SERVER_ERROR, BAD_GATEWAY, SERVICE_UNAVAILABLE, GATEWAY_TIMEOUT
+    interval: 5000
 
 springdoc:
   swagger-ui:
     path: /swagger-ui
+
+bucket:
+  count: 10

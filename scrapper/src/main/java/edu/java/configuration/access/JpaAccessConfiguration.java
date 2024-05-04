@@ -1,6 +1,5 @@
 package edu.java.configuration.access;
 
-import edu.java.clients.BotClient;
 import edu.java.clients.GitHubClient;
 import edu.java.clients.StackoverflowClient;
 import edu.java.repository.jpa.JpaChatRepository;
@@ -8,6 +7,7 @@ import edu.java.repository.jpa.JpaLinkRepository;
 import edu.java.repository.jpa.JpaLinkRepositoryInterface;
 import edu.java.services.ChatService;
 import edu.java.services.LinkService;
+import edu.java.services.Sender;
 import edu.java.services.jpa.JpaChatService;
 import edu.java.services.jpa.JpaLinkService;
 import edu.java.updater.LinkUpdater;
@@ -41,14 +41,14 @@ public class JpaAccessConfiguration {
     @Bean
     public LinkUpdater linkUpdater(
         JpaLinkRepository linkRepository,
-        BotClient botClient,
+        Sender sender,
         LinkProcessor linkProcessor,
         GitHubClient gitHubClient,
         StackoverflowClient stackoverflowClient
     ) {
         return new LinkUpdater(
             linkRepository,
-            botClient,
+            sender,
             linkProcessor,
             gitHubClient,
             stackoverflowClient

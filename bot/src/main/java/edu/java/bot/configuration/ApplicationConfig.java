@@ -11,7 +11,10 @@ public record ApplicationConfig(
     @NotEmpty
     String telegramToken,
     @NotNull
-    ScrapperBaseUrl scrapperBaseUrl
+    ScrapperBaseUrl scrapperBaseUrl,
+
+    @NotNull
+    String scrapperTopicName
 ) {
     public record ScrapperBaseUrl(@NotNull String baseUrl) {
     }

@@ -3,6 +3,7 @@ package service;
 import com.pengrad.telegrambot.model.Update;
 import edu.java.bot.clients.ScrapperClient;
 import edu.java.bot.configuration.CommandConfig;
+import edu.java.bot.configuration.RetryConfiguration;
 import edu.java.bot.services.BotCommandService;
 import edu.java.bot.services.ClientService;
 import org.junit.jupiter.api.Test;
@@ -12,12 +13,22 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.web.reactive.function.client.WebClient;
+import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.http.HttpStatus.BAD_GATEWAY;
+import static org.springframework.http.HttpStatus.GATEWAY_TIMEOUT;
+import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
+import static org.springframework.http.HttpStatus.SERVICE_UNAVAILABLE;
 
 @ExtendWith(MockitoExtension.class)
 public class CommandServiceTest {
 
-    private final ScrapperClient scrapperClient = new ScrapperClient(WebClient.builder(), "http://localhost:8080");
+    private final RetryConfiguration retryConfiguration = new RetryConfiguration(
+        5000,
+        3,
+        List.of(INTERNAL_SERVER_ERROR, BAD_GATEWAY, SERVICE_UNAVAILABLE, GATEWAY_TIMEOUT)
+    );
+    private final ScrapperClient scrapperClient = new ScrapperClient(WebClient.builder(), "http://localhost:8080", retryConfiguration.constant());
     private final ClientService clientService = new ClientService(scrapperClient);
     @Mock
     CommandConfig commandConfig = new CommandConfig();

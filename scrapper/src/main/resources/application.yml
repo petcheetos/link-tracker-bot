@@ -10,6 +10,14 @@ app:
     base-url: "https://api.stackexchange.com/2.3/questions/"
   bot-base-url:
     base-url: "http://localhost:8090"
+  use-queue: true
+
+api:
+  bot:
+    retry-policy: constant
+    attempts: 3
+    http-statuses: INTERNAL_SERVER_ERROR, BAD_GATEWAY, SERVICE_UNAVAILABLE, GATEWAY_TIMEOUT
+    interval: 5000
 
 spring:
   application:
@@ -23,6 +31,16 @@ spring:
     username: postgres
     password: postgres
     url: jdbc:postgresql://localhost:5432/scrapper
+  kafka:
+    bootstrap-servers: localhost:29091,localhost:29092,localhost:9093
+    producer:
+      client-id: "scrapper-kafka-producer"
+      batch-size: 20
+      acks: all
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      properties:
+        linger.ms: 10000
 
 server:
   port: 8080
@@ -33,3 +51,6 @@ logging:
 springdoc:
   swagger-ui:
     path: /swagger-ui
+
+bucket:
+  count: 10
