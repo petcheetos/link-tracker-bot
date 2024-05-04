@@ -7,6 +7,8 @@ import com.pengrad.telegrambot.request.SendMessage;
 import edu.java.bot.exceptions.ApiErrorException;
 import edu.java.bot.services.ClientService;
 import edu.java.bot.services.CommandService;
+import io.micrometer.core.instrument.Counter;
+import io.micrometer.core.instrument.MeterRegistry;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -17,11 +19,19 @@ public class MessageHandler implements UpdatesListener {
     private final CommandService commandService;
     private final ClientService clientService;
 
+    private final Counter messageCounter;
+
     @Autowired
-    public MessageHandler(TelegramBot telegramBot, CommandService commandService, ClientService clientService) {
+    public MessageHandler(
+        TelegramBot telegramBot,
+        CommandService commandService,
+        ClientService clientService,
+        MeterRegistry meterRegistry
+    ) {
         this.telegramBot = telegramBot;
         this.commandService = commandService;
         this.clientService = clientService;
+        this.messageCounter = meterRegistry.counter("messages_processed_total");
         telegramBot.setUpdatesListener(this);
     }
 
@@ -29,6 +39,7 @@ public class MessageHandler implements UpdatesListener {
     public int process(List<Update> list) {
         for (Update update : list) {
             if (update.message() != null && update.message().text() != null) {
+                messageCounter.increment();
                 try {
                     String answer = commandService.createResponse(update, clientService);
                     SendMessage request = new SendMessage(update.message().chat().id(), answer);
