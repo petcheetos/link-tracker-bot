@@ -9,6 +9,25 @@ spring:
     name: bot
   jackson:
     time-zone: UTC
+  kafka:
+    consumer:
+      group-id: "scrapper-group"
+      auto-offset-reset: latest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        spring.json.trusted.packages: "*"
+    bootstrap-servers: localhost:29091,localhost:29092,localhost:29093
+    template:
+      default-topic: messages.updates
+    streams:
+      replication-factor: 2
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      acks: all
+      batch-size: 20
+      client-id: "bot-producer"
 
 server:
   port: 8090
@@ -22,36 +41,6 @@ api:
     attempts: 3
     http-statuses: INTERNAL_SERVER_ERROR, BAD_GATEWAY, SERVICE_UNAVAILABLE, GATEWAY_TIMEOUT
     interval: 5000
-
-management:
-  server:
-    port: 8091
-  metrics:
-    tags:
-      application: ${spring.application.name}
-  endpoints:
-    web:
-      base-path: /
-      exposure:
-        include: "info,health,prometheus"
-      path-mapping:
-        prometheus: "metrics"
-
-kafka:
-  group-id: messages-group
-  bootstrap-servers: localhost:29091
-  auto-offset-reset: latest
-  max-poll-interval-ms: 300_000
-  enable-auto-commit: false
-  concurrency: 1
-  replication-factor: 1
-  dlq:
-    topic: messages.updates_dlq
-    replication-factor: 1
-    partitions: 2
-    acks-mode: all
-    delivery-timeout: 60_000
-    batch-size: 100_000
 
 springdoc:
   swagger-ui:

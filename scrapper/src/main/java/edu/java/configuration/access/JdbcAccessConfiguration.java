@@ -9,7 +9,6 @@ import edu.java.services.LinkService;
 import edu.java.services.Sender;
 import edu.java.services.jdbc.JdbcChatService;
 import edu.java.services.jdbc.JdbcLinkService;
-import edu.java.updater.JdbcLinkUpdater;
 import edu.java.updater.LinkUpdater;
 import edu.java.utils.LinkProcessor;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -46,7 +45,7 @@ public class JdbcAccessConfiguration {
         GitHubClient gitHubClient,
         StackoverflowClient stackoverflowClient
     ) {
-        return new JdbcLinkUpdater(
+        return new LinkUpdater(
             linkRepository,
             sender,
             linkProcessor,

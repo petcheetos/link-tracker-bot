@@ -31,30 +31,16 @@ spring:
     username: postgres
     password: postgres
     url: jdbc:postgresql://localhost:5432/scrapper
-
-management:
-  server:
-    port: 8081
-  metrics:
-    tags:
-      application: ${spring.application.name}
-  endpoints:
-    web:
-      base-path: /
-      exposure:
-        include: "info,health,prometheus"
-      path-mapping:
-        prometheus: "metrics"
-
-kafka:
-  topic: "messages.updates"
-  bootstrap-servers: localhost:29091
-  replication-factor: 1
-  partitions: 2
-  acks-mode: all
-  delivery-timeout: 60_000
-  batch-size: 100_000
-  enable-idempotence: true
+  kafka:
+    bootstrap-servers: localhost:29091,localhost:29092,localhost:9093
+    producer:
+      client-id: "scrapper-kafka-producer"
+      batch-size: 20
+      acks: all
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      properties:
+        linger.ms: 10000
 
 server:
   port: 8080

@@ -15,19 +15,17 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 
 @Entity
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@ToString(exclude = "chatLinks")
 @EqualsAndHashCode(of = "url")
 @Table(name = "link")
 public class Link {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY) //sequence, generator = "sequence-generator"
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
 

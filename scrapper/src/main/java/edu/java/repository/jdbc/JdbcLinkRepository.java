@@ -1,6 +1,6 @@
 package edu.java.repository.jdbc;
 
-import edu.java.dto.LinkDTO;
+import edu.java.dto.entity.Link;
 import edu.java.models.LinkResponse;
 import edu.java.repository.LinkRepository;
 import edu.java.utils.mappers.LinkMapper;
@@ -22,7 +22,7 @@ public class JdbcLinkRepository implements LinkRepository {
     @Override
     @Transactional
     public LinkResponse add(long chatId, URI link) {
-        LinkDTO linkDTO;
+        Link linkDTO;
         try {
             linkDTO = findByUri(link);
         } catch (DataAccessException e) {
@@ -34,8 +34,8 @@ public class JdbcLinkRepository implements LinkRepository {
             );
             linkDTO = findByUri(link);
         }
-        jdbcTemplate.update("insert into chat_links (chat_id, link_id) values (?, ?)", chatId, linkDTO.id());
-        return new LinkResponse(linkDTO.id(), linkDTO.url());
+        jdbcTemplate.update("insert into chat_links (chat_id, link_id) values (?, ?)", chatId, linkDTO.getId());
+        return new LinkResponse(linkDTO.getId(), URI.create(linkDTO.getUrl()));
     }
 
     @Override
@@ -62,24 +62,25 @@ public class JdbcLinkRepository implements LinkRepository {
 
     @Override
     @Transactional
-    public void updateLink(LinkDTO linkDTO) {
+    public void updateLastUpdatedAt(String link, OffsetDateTime time) {
         OffsetDateTime currentTime = OffsetDateTime.now();
         jdbcTemplate.update("update link set last_updated = (?), checked_at = (?) where url = (?)",
-            linkDTO.lastUpdated(), currentTime, linkDTO.url().toString());
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public List<LinkDTO> getLinksToUpdate() {
-        return jdbcTemplate.query(
-            "select * from link where checked_at < timezone('utc', now()) - interval '10 minute'",
-            new LinkMapper()
+            time, currentTime, link
         );
     }
 
     @Override
     @Transactional(readOnly = true)
-    public LinkDTO findByUri(URI uri) throws DataAccessException {
+    public List<Link> getLinksToUpdate(OffsetDateTime time) {
+        return jdbcTemplate.query(
+            "select * from link where checked_at < timezone('utc', now() - ?)",
+            new LinkMapper(), time
+        );
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Link findByUri(URI uri) throws DataAccessException {
         return jdbcTemplate.queryForObject("select * from link where url = (?)",
             new LinkMapper(), uri.toString()
         );
@@ -98,23 +99,21 @@ public class JdbcLinkRepository implements LinkRepository {
 
     @Override
     @Transactional(readOnly = true)
-    public List<Long> getChatIdsForLink(Long linkId) {
-        if (linkId == null) {
-            return null;
-        }
+    public List<Long> findChatIdsByLink(Link link) {
+        String link1 = link.getUrl();
         List<Long> chatIds = jdbcTemplate.query(
-            "select chat_id from chat_links where link_id = ?",
-            (rs, rowNum) -> rs.getLong("chat_id"),
-            linkId
+            "select chat_id from chat_links inner join link on chat_links.link_id = link.id where url = ?",
+            new Object[] {link1},
+            (rs, rowNum) -> rs.getLong("chat_id")
         );
         return chatIds.isEmpty() ? null : chatIds;
     }
 
     @Override
     @Transactional
-    public void checkLink(LinkDTO linkDTO) {
+    public void updateCheckedAt(Link link) {
         OffsetDateTime currentTime = OffsetDateTime.now();
         jdbcTemplate.update("update link set checked_at = (?) "
-            + "where url = (?)", currentTime, linkDTO.url().toString());
+            + "where url = (?)", currentTime, link.getUrl());
     }
 }
